@@ -11,7 +11,7 @@
             $userId = $json["userId"];
             $password = $json["password"];
 
-            $sql = "SELECT * FROM tblusers WHERE user_userId = :username AND user_password = :password";
+            $sql = "SELECT * FROM tblusers WHERE user_userId = :userId AND user_password = :password";
 
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(":userId", $userId);
@@ -29,12 +29,62 @@
         function addLocation($json){
             include "connection.php";
             $json = json_decode($json, true);
-            $userId = $json["userId"];
             $location = $json["location"];
-            $sql = "INSERT INTO tbllocation(loc_name, loc_userId) VALUES(:location, :userId)";
+            $categoryId = $json["categoryId"];
+            $sql = "INSERT INTO tbllocation(location_name, location_categoryId) VALUES(:location, :categoryId)";
             $stmt = $conn->prepare($sql);
-            $stmt->bindParam(":userId", $userId);
             $stmt->bindParam(":location", $location);
+            $stmt->bindParam(":categoryId", $categoryId);
+            $returnValue = 0;
+
+            if($stmt->execute()){
+                if($stmt->rowCount() > 0){
+                   $returnValue = 1;
+                }
+            }
+            return $returnValue;
+        }
+        function addLocationCategory($json){
+            include "connection.php";
+            $json = json_decode($json, true);
+            $locationCategory = $json["locationCategory"];
+            $sql = "INSERT INTO tbllocationcategory(locCateg_name) VALUES(:locationCategory)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(":locationCategory", $locationCategory);
+            $returnValue = 0;
+
+            if($stmt->execute()){
+                if($stmt->rowCount() > 0){
+                   $returnValue = 1;
+                }
+            }
+            return $returnValue;
+        }
+        function addEquipment($json){
+            include "connection.php";
+            $json = json_decode($json, true);
+            $equipment = $json["equipment"];
+            $categoryId = $json["categoryId"];
+            $sql = "INSERT INTO tblequipment(equipment_name, equipment_categoryId) VALUES(:equipment, :categoryId)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(":equipment", $equipment);
+            $stmt->bindParam(":categoryId", $categoryId);
+            $returnValue = 0;
+
+            if($stmt->execute()){
+                if($stmt->rowCount() > 0){
+                   $returnValue = 1;
+                }
+            }
+            return $returnValue;
+        }
+        function addEquipmentCategory($json){
+            include "connection.php";
+            $json = json_decode($json, true);
+            $locationCategory = $json["locationCategory"];
+            $sql = "INSERT INTO tbllocationcategory(locCateg_name) VALUES(:locationCategory)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(":locationCategory", $locationCategory);
             $returnValue = 0;
 
             if($stmt->execute()){
@@ -57,6 +107,9 @@
             break;
         case "addLocation":
             echo $user->addLocation($json);
+            break;
+        case "addLocationCategory":
+            echo $user->addLocationCategory($json);
             break;
     }
 ?>
