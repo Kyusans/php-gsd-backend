@@ -81,10 +81,10 @@
         function addEquipmentCategory($json){
             include "connection.php";
             $json = json_decode($json, true);
-            $locationCategory = $json["locationCategory"];
-            $sql = "INSERT INTO tbllocationcategory(locCateg_name) VALUES(:locationCategory)";
+            $equipmentCategory = $json["equipmentCategory"];
+            $sql = "INSERT INTO tblequipmentcategory(equipCateg_name) VALUES(:equipmentCategory)";
             $stmt = $conn->prepare($sql);
-            $stmt->bindParam(":locationCategory", $locationCategory);
+            $stmt->bindParam(":equipmentCategory", $equipmentCategory);
             $returnValue = 0;
 
             if($stmt->execute()){
@@ -110,6 +110,12 @@
             break;
         case "addLocationCategory":
             echo $user->addLocationCategory($json);
+            break;
+        case "addEquipment":
+            echo $user->addEquipment($json);
+            break;
+        case "addEquipmentCategory":
+            echo $user->addEquipmentCategory($json);
             break;
     }
 ?>
