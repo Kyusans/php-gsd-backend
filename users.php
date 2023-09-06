@@ -77,40 +77,10 @@
             }
             return $returnValue;
         }
-        function addEquipmentCategory($json){
-            include "connection.php";
-            $json = json_decode($json, true);
-            $equipmentCategory = $json["equipmentCategory"];
-            $sql = "INSERT INTO tblequipmentcategory(equipCateg_name) VALUES(:equipmentCategory)";
-            $stmt = $conn->prepare($sql);
-            $stmt->bindParam(":equipmentCategory", $equipmentCategory);
-            $returnValue = 0;
-
-            if($stmt->execute()){
-                if($stmt->rowCount() > 0){
-                   $returnValue = 1;
-                }
-            }
-            return $returnValue;
-        }
 
         function getLocationCategory(){
             include "connection.php";
             $sql = "SELECT * FROM tbllocationcategory";
-            $stmt = $conn->prepare($sql);
-            $returnValue = 0;
-            if($stmt->execute()){
-                if($stmt->rowCount() > 0){
-                    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                    $returnValue = json_encode($rs);
-                }
-            }
-            return $returnValue;
-        }
-
-        function getEquipmentCategory(){
-            include "connection.php";
-            $sql = "SELECT * FROM tblequipmentcategory";
             $stmt = $conn->prepare($sql);
             $returnValue = 0;
             if($stmt->execute()){
@@ -141,14 +111,8 @@
         case "addEquipment":
             echo $user->addEquipment($json);
             break;
-        case "addEquipmentCategory":
-            echo $user->addEquipmentCategory($json);
-            break;
         case "getLocationCategory":
             echo $user->getLocationCategory();
-            break;
-        case "getEquipmentCategory":
-            echo $user->getEquipmentCategory();
             break;
     }
 ?>
