@@ -4,7 +4,6 @@
     class User{
         function login($json){
             include "connection.php";
-            
             //{"username":"kobi", "password":"kobi123"}
 
             $json = json_decode($json, true);
@@ -94,6 +93,34 @@
             }
             return $returnValue;
         }
+
+        function getLocationCategory(){
+            include "connection.php";
+            $sql = "SELECT * FROM tbllocationcategory";
+            $stmt = $conn->prepare($sql);
+            $returnValue = 0;
+            if($stmt->execute()){
+                if($stmt->rowCount() > 0){
+                    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    $returnValue = json_encode($rs);
+                }
+            }
+            return $returnValue;
+        }
+
+        function getEquipmentCategory(){
+            include "connection.php";
+            $sql = "SELECT * FROM tblequipmentcategory";
+            $stmt = $conn->prepare($sql);
+            $returnValue = 0;
+            if($stmt->execute()){
+                if($stmt->rowCount() > 0){
+                    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    $returnValue = json_encode($rs);
+                }
+            }
+            return $returnValue;
+        }
     }
 
     $json = isset($_POST["json"]) ? $_POST["json"] : "0";
@@ -116,6 +143,12 @@
             break;
         case "addEquipmentCategory":
             echo $user->addEquipmentCategory($json);
+            break;
+        case "getLocationCategory":
+            echo $user->getLocationCategory();
+            break;
+        case "getEquipmentCategory":
+            echo $user->getEquipmentCategory();
             break;
     }
 ?>
