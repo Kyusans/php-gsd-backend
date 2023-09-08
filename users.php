@@ -81,7 +81,7 @@
             $sql = "SELECT tbllocation.location_name, tbllocationcategory.locCateg_name ";
             $sql .= "FROM tbllocation INNER JOIN tbllocationcategory ";
             $sql .= "ON tbllocation.location_categoryId = tbllocationcategory.locCateg_id ";
-            $sql .= "WHERE :categoryId = 1";
+            $sql .= "WHERE tbllocationcategory.locCateg_id = :categoryId";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(":categoryId", $json["categoryId"]);
             $returnValue = 0;
