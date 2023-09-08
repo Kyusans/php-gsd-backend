@@ -45,6 +45,22 @@
             $returnValue = $stmt->rowCount() > 0 ? 1 : 0;
             return $returnValue;
         }
+
+        function getComplaints($json){
+            // {"userId": 1}
+            include "connection.php";
+            $json = json_decode($json, true);
+            $sql = "SELECT * FROM tblcomplaints WHERE comp_clientId = :userId";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(":userId", $json["userId"]);
+            $returnValue = 0;
+            $stmt->execute();
+            if($stmt->rowCount() > 0){
+                $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $returnValue = json_encode($rs);
+            }
+            return $returnValue;
+        }
     }//User
 
     function adminLogin($json){
@@ -78,6 +94,9 @@
             break;
         case "addComplaint":
             echo $user->addComplaint($json);
+            break;
+        case "getComplaints":
+            echo $user->getComplaints($json);
             break;
     }
 ?>
