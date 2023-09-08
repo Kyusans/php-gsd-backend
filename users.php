@@ -78,7 +78,10 @@
         function getLocations($json){
             include "connection.php";
             $json = json_decode($json, true);
-            $sql = "SELECT location_name FROM tbllocation WHERE location_categoryId = :categoryId";
+            $sql = "SELECT tbllocation.location_name, tbllocationcategory.locCateg_name ";
+            $sql .= "FROM tbllocation INNER JOIN tbllocationcategory ";
+            $sql .= "ON tbllocation.location_categoryId = tbllocationcategory.locCateg_id ";
+            $sql .= "WHERE :categoryId = 1";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(":categoryId", $json["categoryId"]);
             $returnValue = 0;
