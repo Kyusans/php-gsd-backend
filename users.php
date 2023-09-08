@@ -59,24 +59,7 @@
             }
             return $returnValue;
         }
-        function addEquipment($json){
-            include "connection.php";
-            $json = json_decode($json, true);
-            $equipment = $json["equipment"];
-            $categoryId = $json["categoryId"];
-            $sql = "INSERT INTO tblequipment(equipment_name, equipment_categoryId) VALUES(:equipment, :categoryId)";
-            $stmt = $conn->prepare($sql);
-            $stmt->bindParam(":equipment", $equipment);
-            $stmt->bindParam(":categoryId", $categoryId);
-            $returnValue = 0;
-
-            if($stmt->execute()){
-                if($stmt->rowCount() > 0){
-                   $returnValue = 1;
-                }
-            }
-            return $returnValue;
-        }
+        
 
         function getLocationCategory(){
             include "connection.php";
@@ -88,6 +71,21 @@
                     $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     $returnValue = json_encode($rs);
                 }
+            }
+            return $returnValue;
+        }
+
+        function getLocations($json){
+            include "connection.php";
+            $json = json_decode($json, true);
+            $sql = "SELECT location_name FROM tbllocation WHERE location_categoryId = :categoryId";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(":categoryId", $json["categoryId"]);
+            $returnValue = 0;
+            $stmt->execute();
+            if($stmt->rowCount() > 0){
+                $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $returnValue = json_encode($rs);
             }
             return $returnValue;
         }
@@ -108,11 +106,11 @@
         case "addLocationCategory":
             echo $user->addLocationCategory($json);
             break;
-        case "addEquipment":
-            echo $user->addEquipment($json);
-            break;
         case "getLocationCategory":
             echo $user->getLocationCategory();
+            break;
+        case "getLocations":
+            echo $user->getLocations($json);
             break;
     }
 ?>
