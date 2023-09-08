@@ -1,7 +1,7 @@
 <?php 
     include "headers.php";
 
-    class User{
+    class Admin{
         function addLocation($json){
             include "connection.php";
             $json = json_decode($json, true);
@@ -74,20 +74,20 @@
     $json = isset($_POST["json"]) ? $_POST["json"] : "0";
     $operation = isset($_POST["operation"]) ? $_POST["operation"] : "0";
 
-    $user = new User();
+    $admin = new Admin();
 
     switch($operation){
         case "addLocation":
-            echo $user->addLocation($json);
+            echo $admin->addLocation($json);
             break;
         case "addLocationCategory":
-            echo $user->addLocationCategory($json);
+            echo $admin->addLocationCategory($json);
             break;
         case "getLocationCategory":
-            echo $user->getLocationCategory();
+            echo $admin->getLocationCategory();
             break;
         case "getLocations":
-            echo $user->getLocations($json);
+            echo $admin->getLocations($json);
             break;
     }
 ?>

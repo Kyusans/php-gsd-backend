@@ -27,7 +27,25 @@
             }
             return $returnValue;
         }
-    }
+        function addComplaint($json){
+            include "connection.php";
+            $json = json_decode($json, true);
+            // {"clientId":"1", "locationId":"1", "subject":"guba aircon", "description":"nibuto ang aircon lmao", "status":"1", "locationCategoryId": "1"}
+            $sql = "INSERT INTO tblcomplaints(comp_clientId, comp_locationId, comp_subject, comp_description, comp_status, comp_locationCategoryId) ";
+            $sql .= "VALUES(:clientId, :locationId, :subject, :description, :status, :locationCategoryId)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(":clientId", $json["clientId"]);
+            $stmt->bindParam(":locationId", $json["locationId"]);
+            $stmt->bindParam(":subject", $json["subject"]);
+            $stmt->bindParam(":description", $json["description"]);
+            $stmt->bindParam(":status", $json["status"]);
+            $stmt->bindParam(":locationCategoryId", $json["locationCategoryId"]);
+            $returnValue = 0;
+            $stmt->execute();
+            $returnValue = $stmt->rowCount() > 0 ? 1 : 0;
+            return $returnValue;
+        }
+    }//User
 
     function adminLogin($json){
         include "connection.php";
@@ -49,16 +67,17 @@
         }
         return $returnValue;
     }
-    
 
     $json = isset($_POST["json"]) ? $_POST["json"] : "0";
     $operation = isset($_POST["operation"]) ? $_POST["operation"] : "0";
-
     $user = new User();
 
     switch($operation){
         case "login":
             echo $user->login($json);
+            break;
+        case "addComplaint":
+            echo $user->addComplaint($json);
             break;
     }
 ?>
