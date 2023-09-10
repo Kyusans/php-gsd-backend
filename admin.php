@@ -69,6 +69,20 @@
             }
             return $returnValue;
         }
+
+        function getAllTicket(){
+            include "connection.php";
+            $sql = "SELECT * FROM tblcomplaints ORDER BY comp_id DESC";
+            $stmt = $conn->prepare($sql);
+            $returnValue = 0;
+            if($stmt->execute()){
+                if($stmt->rowCount() > 0){
+                    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    $returnValue = json_encode($rs);
+                }
+            }
+            return $returnValue;
+        }
     }
 
     $json = isset($_POST["json"]) ? $_POST["json"] : "0";
@@ -88,6 +102,9 @@
             break;
         case "getLocations":
             echo $admin->getLocations($json);
+            break;
+        case "getAllTicket":
+            echo $admin->getAllTicket();
             break;
     }
 ?>
