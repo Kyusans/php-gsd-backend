@@ -36,7 +36,6 @@
             }
             return $returnValue;
         }
-        
 
         function getLocationCategory(){
             include "connection.php";
@@ -70,7 +69,7 @@
             return $returnValue;
         }
 
-        function getAllTicket(){
+        function getAllTickets(){
             include "connection.php";
             $sql = "SELECT * FROM tblcomplaints ORDER BY comp_id DESC";
             $stmt = $conn->prepare($sql);
@@ -80,6 +79,22 @@
                     $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     $returnValue = json_encode($rs);
                 }
+            }
+            return $returnValue;
+        }
+
+        function getSelectedTicket($json){
+            // {"compId" : 2}
+            include "connection.php";
+            $json = json_decode($json, true);
+            $sql = "SELECT * FROM tblcomplaints WHERE comp_id = :compId";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(":compId", $json["compId"]);
+            $returnValue = 0;
+            $stmt->execute();
+            if($stmt->rowCount() > 0){
+                $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $returnValue = json_encode($rs);
             }
             return $returnValue;
         }
@@ -103,8 +118,11 @@
         case "getLocations":
             echo $admin->getLocations($json);
             break;
-        case "getAllTicket":
-            echo $admin->getAllTicket();
+        case "getAllTickets":
+            echo $admin->getAllTickets();
+            break;
+        case "getSelectedTicket":
+            echo $admin->getSelectedTicket($json);
             break;
     }
 ?>
