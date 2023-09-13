@@ -87,7 +87,12 @@
             // {"compId" : 2}
             include "connection.php";
             $json = json_decode($json, true);
-            $sql = "SELECT * FROM tblcomplaints WHERE comp_id = :compId";
+            $sql = "SELECT c.comp_subject, c.comp_description, c.comp_date, cl.fac_name, loc.location_name, lc.locCateg_name ";
+            $sql .= "FROM tblcomplaints AS c ";
+            $sql .= "INNER JOIN tblclients AS cl ON c.comp_clientId = cl.fac_id ";
+            $sql .= "INNER JOIN tbllocation AS loc ON c.comp_locationId = loc.location_id ";
+            $sql .= "INNER JOIN tbllocationcategory AS lc ON comp_locationCategoryId = lc.locCateg_id ";
+            $sql .= "WHERE c.comp_id = :compId";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(":compId", $json["compId"]);
             $returnValue = 0;
