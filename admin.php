@@ -54,7 +54,7 @@
         function getLocations($json){
             include "connection.php";
             $json = json_decode($json, true);
-            $sql = "SELECT tbllocation.location_name, tbllocationcategory.locCateg_name ";
+            $sql = "SELECT tbllocation.location_id, tbllocation.location_name, tbllocationcategory.locCateg_name ";
             $sql .= "FROM tbllocation INNER JOIN tbllocationcategory ";
             $sql .= "ON tbllocation.location_categoryId = tbllocationcategory.locCateg_id ";
             $sql .= "WHERE tbllocationcategory.locCateg_id = :categoryId";
@@ -87,7 +87,7 @@
             // {"compId" : 2}
             include "connection.php";
             $json = json_decode($json, true);
-            $sql = "SELECT c.comp_subject, c.comp_description, c.comp_date, cl.fac_name, loc.location_name, lc.locCateg_name ";
+            $sql = "SELECT c.comp_id, c.comp_subject, c.comp_description, c.comp_date, cl.fac_name, loc.location_name, lc.locCateg_name ";
             $sql .= "FROM tblcomplaints AS c ";
             $sql .= "INNER JOIN tblclients AS cl ON c.comp_clientId = cl.fac_id ";
             $sql .= "INNER JOIN tbllocation AS loc ON c.comp_locationId = loc.location_id ";
@@ -100,6 +100,20 @@
             if($stmt->rowCount() > 0){
                 $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 $returnValue = json_encode($rs);
+            }
+            return $returnValue;
+        }
+
+        function getPersonnel(){
+            include "connection.php";
+            $sql = "SELECT * FROM tblusers WHERE user_level = 1";
+            $stmt = $conn->prepare($sql);
+            $returnValue = 0;
+            if($stmt->execute()){
+                if($stmt->rowCount() > 0){
+                    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    $returnValue = json_encode($rs);
+                }
             }
             return $returnValue;
         }
@@ -128,6 +142,9 @@
             break;
         case "getSelectedTicket":
             echo $admin->getSelectedTicket($json);
+            break;
+        case "getPersonnel":
+            echo $admin->getPersonnel();
             break;
     }
 ?>
