@@ -104,9 +104,23 @@
             return $returnValue;
         }
 
-        function getPersonnel(){
+        function getAllPersonnel(){
             include "connection.php";
-            $sql = "SELECT * FROM tblusers WHERE user_level = 1";
+            $sql = "SELECT * FROM tblusers WHERE user_level = 90";
+            $stmt = $conn->prepare($sql);
+            $returnValue = 0;
+            if($stmt->execute()){
+                if($stmt->rowCount() > 0){
+                    $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    $returnValue = json_encode($rs);
+                }
+            }
+            return $returnValue;
+        }
+
+        function getPriority(){
+            include "connection.php";
+            $sql = "SELECT * FROM tblpriority";
             $stmt = $conn->prepare($sql);
             $returnValue = 0;
             if($stmt->execute()){
@@ -143,8 +157,11 @@
         case "getSelectedTicket":
             echo $admin->getSelectedTicket($json);
             break;
-        case "getPersonnel":
-            echo $admin->getPersonnel();
+        case "getAllPersonnel":
+            echo $admin->getAllPersonnel();
+            break;
+        case "getPriority":
+            echo $admin->getPriority();
             break;
     }
 ?>
