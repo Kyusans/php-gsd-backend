@@ -20,6 +20,7 @@
             }
             return $returnValue;
         }
+        
         function addLocationCategory($json){
             include "connection.php";
             $json = json_decode($json, true);
@@ -71,7 +72,9 @@
 
         function getAllTickets(){
             include "connection.php";
-            $sql = "SELECT * FROM tblcomplaints ORDER BY comp_id DESC";
+            $sql = "SELECT a.*, b.joStatus_name ";
+            $sql .= "FROM tblcomplaints as a ";
+            $sql .= "INNER JOIN tbljoborderstatus as b ON a.comp_status = b.joStatus_id";
             $stmt = $conn->prepare($sql);
             $returnValue = 0;
             if($stmt->execute()){
@@ -87,7 +90,7 @@
             // {"compId" : 2}
             include "connection.php";
             $json = json_decode($json, true);
-            $sql = "SELECT c.comp_id, c.comp_subject, c.comp_description, c.comp_date, cl.fac_name, loc.location_name, lc.locCateg_name ";
+            $sql = "SELECT c.comp_id, c.comp_subject, c.comp_description, c.comp_date, cl.fac_name, cl.fac_id, loc.location_name, lc.locCateg_name ";
             $sql .= "FROM tblcomplaints AS c ";
             $sql .= "INNER JOIN tblclients AS cl ON c.comp_clientId = cl.fac_id ";
             $sql .= "INNER JOIN tbllocation AS loc ON c.comp_locationId = loc.location_id ";
@@ -131,6 +134,49 @@
             }
             return $returnValue;
         }
+
+        function submitJobOrder($json){
+            include "connection.php";
+            $json = json_decode($json, true);
+            $master = $json['master'];
+            $detail = $json['detail'];
+            $jobPersonnelId = $detail['jobPersonnelId'];
+
+            try{
+                $conn->beginTransaction();
+                $sql = "INSERT INTO tbljoborders(job_complaintId, job_title, job_description, job_priority, job_createdBy) ";
+                $sql .= "VALUES(:complaintId, :jobTitle, :jobDescription, :jobPriority, :jobCreatedBy)";
+                $stmt = $conn->prepare($sql);
+                $stmt->bindParam(":complaintId", $master['ticketNumber']);
+                $stmt->bindParam(":jobTitle", $master['subject']);
+                $stmt->bindParam(":jobDescription", $master['description']);
+                $stmt->bindParam(":jobPriority", $master['priority']);
+                $stmt->bindParam(":jobCreatedBy", $master['facultyId']);
+                $stmt->execute();
+                if($stmt->rowCount() > 0){
+                    $newId = $conn->lastInsertId();
+                    $sql = "INSERT INTO tbljoborderpersonnel(joPersonnel_joId, joPersonnel_userId) ";
+                    $sql .= "VALUES(:jobId, :userId)";
+                    $stmt = $conn->prepare($sql);
+                    foreach($jobPersonnelId as $userId){
+                        $stmt->bindParam(":jobId", $newId);
+                        $stmt->bindParam(":userId", $userId);
+                        $stmt->execute();
+                    }
+                    if($stmt->rowCount() > 0){
+                        $sql = "UPDATE tblcomplaints SET comp_status = 2 WHERE comp_id = :compId";
+                        $stmt = $conn->prepare($sql);
+                        $stmt->bindParam(":compId", $master["ticketNumber"]);
+                        $stmt->execute();
+                    }
+                }
+                $conn->commit();
+                return 1;
+            }catch(Exception $e){
+                $conn->rollBack();
+                return 0;
+            }
+        }
     }
 
     $json = isset($_POST["json"]) ? $_POST["json"] : "0";
@@ -162,6 +208,9 @@
             break;
         case "getPriority":
             echo $admin->getPriority();
+            break;
+        case "submitJobOrder":
+            echo $admin->submitJobOrder($json);
             break;
     }
 ?>
