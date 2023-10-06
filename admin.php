@@ -151,7 +151,7 @@
                 $stmt->bindParam(":jobTitle", $master['subject']);
                 $stmt->bindParam(":jobDescription", $master['description']);
                 $stmt->bindParam(":jobPriority", $master['priority']);
-                $stmt->bindParam(":jobCreatedBy", $master['facultyId']);
+                $stmt->bindParam(":jobCreatedBy", $master['jobCreatedBy']);
                 $stmt->execute();
                 if($stmt->rowCount() > 0){
                     $newId = $conn->lastInsertId();
@@ -176,6 +176,29 @@
                 $conn->rollBack();
                 return 0;
             }
+        }
+
+        function getJobDetails($json){
+            include "connection.php";
+            $json = json_decode($json, true);
+            $sql = "SELECT a.comp_subject, b.location_name, c.locCateg_name, d.job_description, d.job_createDate, e.priority_name, f.fac_name, g.user_full_name ";
+            $sql .= "FROM tblcomplaints as a ";
+            $sql .= "INNER JOIN tbllocation as b ON a.comp_locationId = b.location_id ";
+            $sql .= "INNER JOIN tbllocationcategory as c ON a.comp_locationCategoryId = c.locCateg_id ";
+            $sql .= "INNER JOIN tbljoborders as d ON d.job_complaintId = a.comp_id ";
+            $sql .= "INNER JOIN tblpriority as e ON d.job_priority = e.priority_id ";
+            $sql .= "INNER JOIN tblclients as f ON f.fac_id = a.comp_clientId ";
+            $sql .= "INNER JOIN tblusers as g ON g.user_id = d.job_createdBy ";
+            $sql .= "WHERE a.comp_id = :compId ";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(":compId", $json["compId"]);
+            $returnValue = 0;
+            $stmt->execute();
+            if($stmt->rowCount() > 0){
+                $rs = $stmt->fetch(PDO::FETCH_ASSOC);
+                $returnValue = json_encode($rs);
+            }
+            return $returnValue;
         }
     }
 
@@ -211,6 +234,9 @@
             break;
         case "submitJobOrder":
             echo $admin->submitJobOrder($json);
+            break;
+        case "getJobDetails":
+            echo $admin->getJobDetails($json);
             break;
     }
 ?>
