@@ -5,10 +5,13 @@
         function getJobTicket($json){
             include "connection.php";
             $json = json_decode($json, true);
-            $sql =  "SELECT b.job_title, b.job_description, b.job_createDate, b.job_complaintId ";
-            $sql .= "FROM tbljoborderpersonnel as a ";
-            $sql .= "INNER JOIN tbljoborders as b ON a.joPersonnel_joId = b.job_id ";
-            $sql .= "WHERE a.joPersonnel_userId = :userId";
+            $sql = "SELECT b.job_title, b.job_description, b.job_createDate, b.job_complaintId, d.joStatus_name
+            FROM tbljoborderpersonnel as a
+            INNER JOIN tbljoborders as b ON a.joPersonnel_joId = b.job_id
+            INNER JOIN tblcomplaints as c ON b.job_complaintId = c.comp_id
+            INNER JOIN tbljoborderstatus as d ON c.comp_id = d.joStatus_id
+            WHERE a.joPersonnel_userId = :userId";
+    
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(":userId", $json["userId"]);
             $stmt->execute();
