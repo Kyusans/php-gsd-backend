@@ -75,6 +75,24 @@
             return $stmt->rowCount() > 0 ? 1 : 0;
         }
 
+        function getComment($json){
+            include "connection.php";
+            $json = json_decode($json, true);
+            $sql = "SELECT c.comment_commentText, c.comment_date, a.full_name ";
+            $sql .= "FROM vwusers as a ";
+            $sql .= "INNER JOIN tblcomments as c ON c.comment_userId = a.user_id ";
+            $sql .= "WHERE c.comment_complaintId = :compId";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(":compId", $json["compId"]);
+            $stmt->execute();
+            $returnValue = 0;
+            if($stmt->rowCount() > 0){
+                $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $returnValue = json_encode($rs);
+            }
+            return $returnValue;
+        }
+        
     }//User
 
     function adminLogin($json){
@@ -114,6 +132,9 @@
             break;
         case "addComment":
             echo $user->addComment($json);
+            break;
+        case "getComment":
+            echo $user->getComment($json);
             break;
     }
 ?>
