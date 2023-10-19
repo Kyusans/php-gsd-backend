@@ -10,7 +10,7 @@
             INNER JOIN tbljoborders as b ON a.joPersonnel_joId = b.job_id
             INNER JOIN tblcomplaints as c ON b.job_complaintId = c.comp_id
             INNER JOIN tbljoborderstatus as d ON c.comp_status = d.joStatus_id
-            WHERE a.joPersonnel_userId = :userId";
+            WHERE a.joPersonnel_userId = :userId ORDER BY b.job_id DESC";
     
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(":userId", $json["userId"]);
