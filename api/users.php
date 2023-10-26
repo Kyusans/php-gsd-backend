@@ -1,7 +1,7 @@
 <?php 
     include "headers.php";
 
-    class User{
+    class User{        
         function login($json){
             include "connection.php";
             //{"userId":"00-099-F", "password":"phinma-coc-cite"}
@@ -92,7 +92,19 @@
             }
             return $returnValue;
         }
-        
+
+        function insertToken($json){
+            include "connection.php";
+            $json = json_decode($json, true);
+            $sql = "UPDATE tblusers SET user_token = :token WHERE user_id = :userId;";
+            
+            echo "SQL: " . $sql;
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':token', $json['token']);
+            $stmt->bindParam(':userId', $json['userId']);
+            $stmt->execute();
+            return $stmt->rowCount() > 0 ? 1 : 0;
+        }
     }//User
 
     function adminLogin($json){
@@ -135,6 +147,9 @@
             break;
         case "getComment":
             echo $user->getComment($json);
+            break;
+        case "inserToken":
+            echo $user->insertToken($json);
             break;
     }
 ?>
