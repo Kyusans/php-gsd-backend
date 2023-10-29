@@ -27,6 +27,7 @@
             }
             return $returnValue;
         }
+
         function addComplaint($json){
             include "connection.php";
             $json = json_decode($json, true);
@@ -97,8 +98,6 @@
             include "connection.php";
             $json = json_decode($json, true);
             $sql = "UPDATE tblusers SET user_token = :token WHERE user_id = :userId;";
-            
-            echo "SQL: " . $sql;
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':token', $json['token']);
             $stmt->bindParam(':userId', $json['userId']);
@@ -106,6 +105,19 @@
             return $stmt->rowCount() > 0 ? 1 : 0;
         }
     }//User
+
+    function getAdminToken() {
+        include 'connection.php';
+        $sql = "SELECT user_token FROM tblusers WHERE user_level = 100";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        if ($stmt->rowCount() > 0) {
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $row['user_token'];
+        }
+        return 0; 
+    }
+    
 
     function adminLogin($json){
         include "connection.php";
@@ -148,8 +160,10 @@
         case "getComment":
             echo $user->getComment($json);
             break;
-        case "inserToken":
+        case "insertToken":
             echo $user->insertToken($json);
             break;
+        case "getAdminToken":
+            echo getAdminToken($json);
     }
 ?>
