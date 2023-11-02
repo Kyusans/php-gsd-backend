@@ -162,6 +162,10 @@
                         $stmt->bindParam(":jobId", $newId);
                         $stmt->bindParam(":userId", $userId);
                         $stmt->execute();
+
+                        $token = getTokenForUserId($userId); // Implement this function to get the token for a user
+                        $notification = new Notification();
+                        $notification->sendNotif($token, $master['subject']);
                     }
                     if($stmt->rowCount() > 0){
                         $sql = "UPDATE tblcomplaints SET comp_status = 2 WHERE comp_id = :compId";
@@ -203,6 +207,18 @@
             }
             return $returnValue;
         }
+    }// admin class
+
+    function getTokenForUserId($userId){
+        include 'connection.php';
+        $sql = "SELECT user_token FROM tblusers WHERE user_id = " . $userId;
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        if ($stmt->rowCount() > 0) {
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $row['user_token'];
+        }
+        return 0; 
     }
 
     $json = isset($_POST["json"]) ? $_POST["json"] : "0";
