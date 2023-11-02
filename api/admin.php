@@ -180,6 +180,7 @@
 
         function getJobDetails($json){
             include "connection.php";
+            // {"compId": 14}
             $json = json_decode($json, true);
             $sql = "SELECT a.comp_subject, a.comp_id, b.location_name, c.locCateg_name, d.job_description, d.job_createDate, e.priority_name, f.fac_name, g.user_full_name, h.joStatus_name, h.joStatus_id ";
             $sql .= "FROM tblcomplaints as a ";
@@ -191,6 +192,7 @@
             $sql .= "INNER JOIN tblusers as g ON g.user_id = d.job_createdBy ";
             $sql .= "INNER JOIN tbljoborderstatus as h ON a.comp_status = h.joStatus_id ";
             $sql .= "WHERE a.comp_id = :compId";
+            // echo "sql: " . $sql;
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(":compId", $json["compId"]);
             $returnValue = 0;

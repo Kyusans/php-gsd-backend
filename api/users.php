@@ -42,7 +42,7 @@
             $stmt->bindParam(":locationCategoryId", $json["locationCategoryId"]);
             $returnValue = 0;
             $stmt->execute();
-            $returnValue = $stmt->rowCount() > 0 ? 1 : 0;
+            $returnValue = $stmt->rowCount() > 0 ? 1 : 0; 
             return $returnValue;
         }
 
@@ -117,7 +117,6 @@
         }
         return 0; 
     }
-    
 
     function adminLogin($json){
         include "connection.php";
