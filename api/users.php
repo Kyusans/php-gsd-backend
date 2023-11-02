@@ -30,6 +30,7 @@
 
         function addComplaint($json){
             include "connection.php";
+            require_once "sendNotification.php";
             $json = json_decode($json, true);
             // {"clientId":"1", "locationId":"1", "subject":"guba aircon", "description":"nibuto ang aircon lmao", "status":"1", "locationCategoryId": "1"}
             $sql = "INSERT INTO tblcomplaints(comp_clientId, comp_locationId, comp_subject, comp_description, comp_locationCategoryId) ";
@@ -43,6 +44,11 @@
             $returnValue = 0;
             $stmt->execute();
             $returnValue = $stmt->rowCount() > 0 ? 1 : 0; 
+            if($returnValue == 1){
+                $token = getAdminToken();
+                $notification = new Notification();
+                $notification->sendNotif($token, $json["subject"]);
+            }
             return $returnValue;
         }
 
