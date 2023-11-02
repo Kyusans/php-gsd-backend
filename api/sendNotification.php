@@ -14,10 +14,16 @@
         ],
       ];
       $webPush = new WebPush($auth);
-      $payload = '{"title":"New complaint ticket", "body": "' . $subject . '"}';
-      $subscription = Subscription::create(json_decode($token), true);
-      $webPush->sendOneNotification($subscription, $payload, ['TTL' => 5000]);
+      $url = 'http://localhost:3000';
+      $payload = ['title' => 'New complaint ticket', 'body' => $subject, 'url' => $url];
+      $tokenArray = json_decode($token, true);
+      $subscription = Subscription::create($tokenArray, true);
+      $report = $webPush->sendOneNotification($subscription, json_encode($payload), ['TTL' => 5000]);
+      print_r($report);
     }
   }
+
+  // $notification = new Notification();
+  // $notification->sendNotif('{"endpoint":"https://wns2-bl2p.notify.windows.com/w/?token=BQYAAAAtnhFkvEvu3Mj8wKSwsyRuy8MVD1LiJUQG%2bkeKWfnVmkPxEeUltQ9H1uAazE6ISJtV1h88JTrfut3JYoxKcHtljit%2fKClz%2bkPsdSp2sMMJdwq3OnJvBWY3EluVVGhnoQcQFpvthamjqKTAIxhWRDHau0gTYHHUpvGZMHQq%2bxcx9GRmnS9m1MHKJJvFlrZ8KAJMk7ZMVq9PYOBDhsuDIf8iTerc6VO8DW3PUpyQ9HDbcjIis2XJ9dlhhGzWDS6X5I%2bktjnlTbR%2bG%2bK7%2bA0RvjvrkNFOAELoZPq9VcfmlizHf1OQSEcm%2fReWbOaXubzRUTU%3d","expirationTime":null,"keys":{"p256dh":"BP5puLNmVVM_6j0mkFXQyO24OEqgD75YAUrrs2A8lMDW8NNsaLy8uNPL-UkJ58ReaSrOORq4V3-GdvAJwbrkv5s","auth":"_72lstpFFGrcO4fAdzS6Xg"}}', "subject");
 
 
