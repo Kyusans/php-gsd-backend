@@ -137,6 +137,7 @@
 
         function submitJobOrder($json){
             include "connection.php";
+            require_once "sendNotification.php";
             $json = json_decode($json, true);
             $master = $json['master'];
             $detail = $json['detail'];
