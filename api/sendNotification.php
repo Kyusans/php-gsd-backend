@@ -5,7 +5,7 @@
   use Minishlink\WebPush\WebPush;
   
   class Notification{
-    function sendNotif($token, $subject){
+    function sendNotif($token, $subject, $message){
       $auth = [
         'VAPID' => [
             'subject' => 'mailto:me@website.com',
@@ -15,10 +15,10 @@
       ];
       $webPush = new WebPush($auth);
       $url = 'http://localhost:3000';
-      $payload = ['title' => 'New complaint ticket', 'body' => $subject, 'url' => $url];
+      $payload = ['title' => $message, 'body' => $subject, 'url' => $url];
       $tokenArray = json_decode($token, true);
       $subscription = Subscription::create($tokenArray, true);
       $webPush->sendOneNotification($subscription, json_encode($payload), ['TTL' => 5000]);
-      // print_r($report);
+      // print_r($report); 'New complaint ticket'
     }
   }

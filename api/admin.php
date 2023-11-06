@@ -166,7 +166,7 @@
 
                         $token = getTokenForUserId($userId); // Implement this function to get the token for a user
                         $notification = new Notification();
-                        $notification->sendNotif($token, $master['subject']);
+                        $notification->sendNotif($token, $master['subject'], "New job ticket");
                     }
                     if($stmt->rowCount() > 0){
                         $sql = "UPDATE tblcomplaints SET comp_status = 2 WHERE comp_id = :compId";

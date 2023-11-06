@@ -47,7 +47,7 @@
             if($returnValue == 1){
                 $token = getAdminToken();
                 $notification = new Notification();
-                $notification->sendNotif($token, $json["subject"]);
+                $notification->sendNotif($token, $json["subject"], "New complaint ticket");
             }
             return $returnValue;
         }
