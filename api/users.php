@@ -112,6 +112,11 @@
         }
     }//User
 
+    function getCurrentDate(){
+        $today = new DateTime("now", new DateTimeZone('Asia/Manila'));
+        return $today->format('Y-m-d H:i:s');
+    }
+
     function getAdminToken() {
         include 'connection.php';
         $sql = "SELECT user_token FROM tblusers WHERE user_level = 100";

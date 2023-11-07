@@ -19,6 +19,5 @@
       $tokenArray = json_decode($token, true);
       $subscription = Subscription::create($tokenArray, true);
       $webPush->sendOneNotification($subscription, json_encode($payload), ['TTL' => 5000]);
-      // print_r($report); 'New complaint ticket'
     }
   }
