@@ -72,15 +72,18 @@
             //{"compId": 1, "userId":"2", "commentText" : "humana nani"}
             include "connection.php";
             $json = json_decode($json, true);
-            $sql = "INSERT INTO tblcomments(comment_complaintId, comment_userId, comment_commentText) ";
-            $sql .= "VALUES(:compId, :userId, :commentText)";
+            $date = getCurrentDate();
+            $sql = "INSERT INTO tblcomments(comment_complaintId, comment_userId, comment_commentText, comment_date) ";
+            $sql .= "VALUES(:compId, :userId, :commentText, :date)";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':compId', $json["compId"]);
             $stmt->bindParam(':userId', $json["userId"]);
             $stmt->bindParam(':commentText', $json["commentText"]);
+            $stmt->bindParam(':date', $date); 
             $stmt->execute();
             return $stmt->rowCount() > 0 ? 1 : 0;
         }
+        
 
         function getComment($json){
             include "connection.php";
