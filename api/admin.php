@@ -215,7 +215,11 @@
         function getTicketsByStatus($json){
             include "connection.php";
             $json = json_decode($json, true);
-            $sql = "SELECT * FROM tblcomplaints WHERE comp_status = :status";
+            $sql = "SELECT a.*, b.joStatus_name ";
+            $sql .= "FROM tblcomplaints as a  ";
+            $sql .= "INNER JOIN tbljoborderstatus as b ON a.comp_status = b.joStatus_id ";
+            $sql .= "WHERE comp_status = :status ";
+            $sql .= "ORDER BY a.comp_id DESC";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(":status",$json["compStatus"]);
             $stmt->execute();
