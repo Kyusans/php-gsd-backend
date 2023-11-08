@@ -137,22 +137,25 @@
 
         function submitJobOrder($json){
             include "connection.php";
+            include "users.php";
             require_once "sendNotification.php";
             $json = json_decode($json, true);
+            $date = getCurrentDate();
             $master = $json['master'];
             $detail = $json['detail'];
             $jobPersonnelId = $detail['jobPersonnelId'];
 
             try{
                 $conn->beginTransaction();
-                $sql = "INSERT INTO tbljoborders(job_complaintId, job_title, job_description, job_priority, job_createdBy) ";
-                $sql .= "VALUES(:complaintId, :jobTitle, :jobDescription, :jobPriority, :jobCreatedBy)";
+                $sql = "INSERT INTO tbljoborders(job_complaintId, job_title, job_description, job_priority, job_createdBy, job_createDate) ";
+                $sql .= "VALUES(:complaintId, :jobTitle, :jobDescription, :jobPriority, :jobCreatedBy, :date)";
                 $stmt = $conn->prepare($sql);
                 $stmt->bindParam(":complaintId", $master['ticketNumber']);
                 $stmt->bindParam(":jobTitle", $master['subject']);
                 $stmt->bindParam(":jobDescription", $master['description']);
                 $stmt->bindParam(":jobPriority", $master['priority']);
                 $stmt->bindParam(":jobCreatedBy", $master['jobCreatedBy']);
+                $stmt->bindParam(":date", $date);
                 $stmt->execute();
                 if($stmt->rowCount() > 0){
                     $newId = $conn->lastInsertId();
@@ -164,7 +167,7 @@
                         $stmt->bindParam(":userId", $userId);
                         $stmt->execute();
 
-                        $token = getTokenForUserId($userId); // Implement this function to get the token for a user
+                        $token = getTokenForUserId($userId);
                         $notification = new Notification();
                         $notification->sendNotif($token, $master['subject'], "New job ticket");
                     }
@@ -204,6 +207,21 @@
             $stmt->execute();
             if($stmt->rowCount() > 0){
                 $rs = $stmt->fetch(PDO::FETCH_ASSOC);
+                $returnValue = json_encode($rs);
+            }
+            return $returnValue;
+        }
+
+        function getTicketsByStatus($json){
+            include "connection.php";
+            $json = json_decode($json, true);
+            $sql = "SELECT * FROM tblcomplaints WHERE comp_status = :status";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(":status",$json["compStatus"]);
+            $stmt->execute();
+            $returnValue = 0;
+            if($stmt->rowCount() > 0){
+                $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 $returnValue = json_encode($rs);
             }
             return $returnValue;
@@ -257,6 +275,9 @@
             break;
         case "getJobDetails":
             echo $admin->getJobDetails($json);
+            break;
+        case "getTicketsByStatus":
+            echo $admin->getTicketsByStatus($json);
             break;
     }
 ?>
