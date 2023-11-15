@@ -14,7 +14,7 @@
         ],
       ];
       $webPush = new WebPush($auth);
-      $url = 'http://localhost:3000';
+      $url = 'https://coc-studentinfo.net/gsd/';
       $payload = ['title' => $message, 'body' => $subject, 'url' => $url];
       $tokenArray = json_decode($token, true);
       $subscription = Subscription::create($tokenArray, true);

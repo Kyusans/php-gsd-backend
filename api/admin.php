@@ -230,6 +230,24 @@
             }
             return $returnValue;
         }
+
+        function getAssignedPersonnel($json){
+            include "connection.php";
+            $json = json_decode($json, true);
+            $sql = "SELECT b.user_full_name ";
+            $sql .= "FROM tbljoborderpersonnel as a ";
+            $sql .= "INNER JOIN tblusers as b ON a.joPersonnel_userId = b.user_id ";
+            $sql .= "WHERE a.joPersonnel_joId = :jobId";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(":jobId", $json["jobId"]);
+            $stmt->execute();
+            $returnValue = 0;
+            if($stmt->rowCount() > 0) {
+                $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $returnValue = json_encode($rs);
+            }            
+            return $returnValue;
+        }
     }// admin class
 
     function getTokenForUserId($userId){
@@ -282,6 +300,9 @@
             break;
         case "getTicketsByStatus":
             echo $admin->getTicketsByStatus($json);
+            break;
+        case "getAssignedPersonnel":
+            echo $admin->getAssignedPersonnel($json);
             break;
     }
 ?>

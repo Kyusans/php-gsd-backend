@@ -90,7 +90,7 @@
         function getComment($json){
             include "connection.php";
             $json = json_decode($json, true);
-            $sql = "SELECT c.comment_commentText, c.comment_date, a.full_name ";
+            $sql = "SELECT c.comment_commentText, c.comment_date, a.full_name, a.user_id ";
             $sql .= "FROM vwusers as a ";
             $sql .= "INNER JOIN tblcomments as c ON c.comment_userId = a.user_id ";
             $sql .= "WHERE c.comment_complaintId = :compId ORDER BY c.comment_id DESC";
