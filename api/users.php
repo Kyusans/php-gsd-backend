@@ -151,6 +151,20 @@
             return $returnValue;
         }
 
+        function getSelectedComplaint($json){
+            include "connection.php";
+            $json = json_decode($json, true);
+            $sql = "SELECT * FROM tblcomplaints WHERE comp_id = :compId";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(":compId", $json["compId"]);
+            $stmt->execute();
+            $returnValue = 0;
+            if($stmt->rowCount() > 0) {
+                $rs = $stmt->fetch();
+                $returnValue = json_encode($rs);
+            }
+            return $returnValue;
+        }
 
     }//User
 
@@ -253,6 +267,9 @@
             break;
         case "getCurrentPassword":
             echo $user->getCurrentPassword($json);
+            break;
+        case "getSelectedComplaint":
+            echo $user->getSelectedComplaint($json);
             break;
     }
 ?>
