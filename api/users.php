@@ -115,41 +115,14 @@
             return $stmt->rowCount() > 0 ? 1 : 0;
         }
 
-        function getCurrentPassword($json){
-            include "connection.php";
-            $json = json_decode($json, true);
-            $sql = "SELECT fac_password from tblclients WHERE fac_code = :userId";
-            $stmt = $conn->prepare($sql);
-            $stmt->bindParam(":userId", $json["userId"]);
-            $returnValue = 0;
-            if($stmt->execute()){
-                if($stmt->rowCount() > 0){
-                    $rs = $stmt->fetch(PDO::FETCH_ASSOC);
-                    $returnValue = json_encode($rs);
-                }else{
-                    $returnValue = getCurrentUserPassword($json);
-                }
-            }
-            return $returnValue;
-        }
+        // function changePassword($json){
+        //     include "connection.php";
+        //     $json = json_decode($json, true);
+
+        // }
+
 
     }//User
-
-    function getCurrentUserPassword($json){
-        include "connection.php";
-        $json = json_decode($json, true);
-        $sql = "SELECT user_password from tblusers WHERE user_id = :userId";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(":userId", $json["userId"]);
-        $returnValue = 0;
-        if($stmt->execute()){
-            if($stmt->rowCount() > 0){
-                $rs = $stmt->fetch(PDO::FETCH_ASSOC);
-                $returnValue = json_encode($rs);
-            }
-        }
-        return $returnValue;
-    }
 
     function getCurrentDate(){
         $today = new DateTime("now", new DateTimeZone('Asia/Manila'));
@@ -214,5 +187,6 @@
             break;
         case "getAdminToken":
             echo getAdminToken($json);
+            break;
     }
 ?>
