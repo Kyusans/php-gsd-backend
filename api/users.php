@@ -115,14 +115,39 @@
             return $stmt->rowCount() > 0 ? 1 : 0;
         }
 
-        // function changePassword($json){
-        //     include "connection.php";
-        //     $json = json_decode($json, true);
-
-        // }
+        function changePassword($json){
+            include "connection.php";
+            $json = json_decode($json, true);
+            $sql = "UPDATE tblclients set fac_password = :password WHERE fac_code = :userId";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(":userId", $json["userId"]);
+            $stmt->bindParam(":password", $json["password"]);
+            $stmt->execute();
+            $returnValue = 0;
+            if($stmt->rowCount() > 0) {
+                $returnValue = 1;
+            }else{
+                $returnValue = changeUserPassword($json);
+            }
+            return $returnValue;
+        }
 
 
     }//User
+
+    function changeUserPassword($json){
+        include "connection.php";
+        $jsonString = json_encode($json);
+        $decodedJson = json_decode($jsonString, true);
+        $userId = $decodedJson["userId"];
+        $password = $decodedJson["password"];
+        $sql = "UPDATE tblusers set user_password = :password WHERE user_id = :userId";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(":userId", $userId);
+        $stmt->bindParam(":password", $password);
+        $stmt->execute();
+        return $stmt->rowCount() > 0 ? 1 : 0;
+    }
 
     function getCurrentDate(){
         $today = new DateTime("now", new DateTimeZone('Asia/Manila'));
@@ -187,6 +212,9 @@
             break;
         case "getAdminToken":
             echo getAdminToken($json);
+            break;
+        case "changePassword":
+            echo $user->changePassword($json);
             break;
     }
 ?>
