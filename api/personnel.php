@@ -55,6 +55,21 @@
             $stmt->execute();
             return $stmt->rowCount() > 0 ? 1 : 0;
         }
+
+        function getSelectedStatus($json){
+            include "connection.php";
+            $json = json_decode($json, true);
+            $sql = "SELECT * FROM tblcomplaints WHERE comp_status = :compStatus ORDER BY comp_date DESC";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(":compStatus", $json["compStatus"]);
+            $returnValue = 0;
+            $stmt->execute();
+            if($stmt->rowCount() > 0) {
+                $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $returnValue = json_encode($rs);
+            }
+            return $returnValue;
+        }
     }
 
     $json = isset($_POST["json"]) ? $_POST["json"] : "0";
@@ -70,6 +85,9 @@
             break;
         case "jobDone":
             echo $personnel->jobDone($json);
+            break;
+        case "getSelectedStatus":
+            echo $personnel->getSelectedStatus($json);
             break;
     }
 ?>
