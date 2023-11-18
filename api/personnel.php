@@ -65,7 +65,7 @@
             INNER JOIN tblcomplaints as c ON b.job_complaintId = c.comp_id 
             INNER JOIN tbljoborderstatus as d ON c.comp_status = d.joStatus_id 
             INNER JOIN tblpriority as e ON b.job_priority = e.priority_id 
-            WHERE a.joPersonnel_userId = :userId AND b.job_priority = :priority ORDER BY b.job_id DESC";
+            WHERE a.joPersonnel_userId = :userId AND b.job_priority = :priority AND c.comp_status = 2  ORDER BY b.job_id DESC";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(":priority", $json["priority"]);
             $stmt->bindParam(":userId", $json["userId"]);
