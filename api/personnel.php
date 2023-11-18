@@ -59,9 +59,16 @@
         function getSelectedStatus($json){
             include "connection.php";
             $json = json_decode($json, true);
-            $sql = "SELECT * FROM tblcomplaints WHERE comp_status = :compStatus ORDER BY comp_date DESC";
+            $sql = "SELECT b.job_title, b.job_description, b.job_createDate, b.job_complaintId, d.joStatus_name, e.priority_name 
+            FROM tbljoborderpersonnel as a 
+            INNER JOIN tbljoborders as b ON a.joPersonnel_joId = b.job_id 
+            INNER JOIN tblcomplaints as c ON b.job_complaintId = c.comp_id 
+            INNER JOIN tbljoborderstatus as d ON c.comp_status = d.joStatus_id 
+            INNER JOIN tblpriority as e ON b.job_priority = e.priority_id 
+            WHERE a.joPersonnel_userId = :userId AND b.job_priority = :priority ORDER BY b.job_id DESC";
             $stmt = $conn->prepare($sql);
-            $stmt->bindParam(":compStatus", $json["compStatus"]);
+            $stmt->bindParam(":priority", $json["priority"]);
+            $stmt->bindParam(":userId", $json["userId"]);
             $returnValue = 0;
             $stmt->execute();
             if($stmt->rowCount() > 0) {
