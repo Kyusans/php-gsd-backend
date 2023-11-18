@@ -160,10 +160,25 @@
             $stmt->execute();
             $returnValue = 0;
             if($stmt->rowCount() > 0) {
-                $rs = $stmt->fetch();
+                $rs = $stmt->fetch(PDO::FETCH_ASSOC);
                 $returnValue = json_encode($rs);
             }
             return $returnValue;
+        }
+
+        function updateTicket($json){
+            include "connection.php";
+            $json = json_decode($json, true);
+            $sql = "UPDATE tblcomplaints SET comp_subject = :subject, comp_locationId = :locationId, comp_locationCategoryId = :locationCategoryId, ";
+            $sql .= "comp_description = :description WHERE comp_id = :compId";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(":compId", $json["compId"]);
+            $stmt->bindParam(":locationId", $json["locationId"]);
+            $stmt->bindParam(":subject", $json["subject"]);
+            $stmt->bindParam(":description", $json["description"]);
+            $stmt->bindParam(":locationCategoryId", $json["locationCategoryId"]);
+            $stmt->execute();
+            return $stmt->rowCount() > 0 ? 1 : 0; 
         }
 
     }//User
@@ -270,6 +285,9 @@
             break;
         case "getSelectedComplaint":
             echo $user->getSelectedComplaint($json);
+            break;
+        case "updateTicket":
+            echo $user->updateTicket($json);
             break;
     }
 ?>
