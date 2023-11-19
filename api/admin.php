@@ -176,6 +176,20 @@
                         $stmt = $conn->prepare($sql);
                         $stmt->bindParam(":compId", $master["ticketNumber"]);
                         $stmt->execute();
+
+                        //{"compId": 1, "userId":"2", "commentText" : "humana nani"}
+                        if($stmt->rowCount() > 0 && $master["additionalComment"] !== null){
+                            $date = getCurrentDate();
+                            $sql = "INSERT INTO tblcomments(comment_complaintId, comment_userId, comment_commentText, comment_date) ";
+                            $sql .= "VALUES(:compId, :userId, :commentText, :date)";
+                            $stmt = $conn->prepare($sql);
+                            $stmt->bindParam(':compId', $master["ticketNumber"]);
+                            $stmt->bindParam(':userId', $master["jobCreatedBy"]);
+                            $stmt->bindParam(':commentText', $master["additionalComment"]);
+                            $stmt->bindParam(':date', $date); 
+                            $stmt->execute();
+                        }
+
                     }
                 }
                 $conn->commit();
