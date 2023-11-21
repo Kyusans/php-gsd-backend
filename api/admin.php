@@ -72,9 +72,12 @@
 
         function getAllTickets(){
             include "connection.php";
-            $sql = "SELECT a.*, b.joStatus_name ";
-            $sql .= "FROM tblcomplaints as a ";
-            $sql .= "INNER JOIN tbljoborderstatus as b ON a.comp_status = b.joStatus_id ORDER BY a.comp_id DESC";
+            $sql = "SELECT a.*, b.joStatus_name 
+            FROM tblcomplaints as a 
+            INNER JOIN tbljoborderstatus as b ON a.comp_status = b.joStatus_id 
+            WHERE a.comp_status < 3 
+            ORDER BY a.comp_id DESC";
+
             $stmt = $conn->prepare($sql);
             $returnValue = 0;
             if($stmt->execute()){
