@@ -265,6 +265,26 @@
             }            
             return $returnValue;
         }
+
+        function getTicketsByDate($json){
+            // {"startDate":"2023-11-19 00:00:00", "endDate":"2023-11-21 11:29:06"}
+            include "connection.php";
+            $json = json_decode($json, true);
+            $sql = "SELECT * 
+                FROM tblcomplaints 
+                WHERE comp_date BETWEEN :startDate AND :endDate
+                ORDER BY comp_date DESC";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(":startDate",$json["startDate"]);
+            $stmt->bindParam(":endDate",$json["endDate"]);
+            $stmt->execute();
+            $returnValue = 0;
+            if($stmt->rowCount() > 0){
+                $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $returnValue = json_encode($rs);
+            }
+            return $returnValue;
+        }
     }// admin class
 
     function getTokenForUserId($userId){
@@ -320,6 +340,9 @@
             break;
         case "getAssignedPersonnel":
             echo $admin->getAssignedPersonnel($json);
+            break;
+        case "getTicketsByDate":
+            echo $admin->getTicketsByDate($json);
             break;
     }
 ?>
