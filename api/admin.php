@@ -270,10 +270,15 @@
             // {"startDate":"2023-11-19 00:00:00", "endDate":"2023-11-21 11:29:06"}
             include "connection.php";
             $json = json_decode($json, true);
-            $sql = "SELECT * 
-                FROM tblcomplaints 
-                WHERE comp_date BETWEEN :startDate AND :endDate
-                ORDER BY comp_date DESC";
+            $sql = "SELECT a.comp_subject, a.comp_date, b.location_name, e.user_full_name, f.fac_name 
+            FROM tblcomplaints as a 
+            INNER JOIN tbllocation as b ON b.location_id = a.comp_locationId 
+            INNER JOIN tbljoborders as c ON c.job_complaintId = a.comp_id 
+            INNER JOIN tbljoborderpersonnel as d ON d.joPersonnel_joId = c.job_id 
+            INNER JOIN tblusers as e ON e.user_id = d.joPersonnel_userId 
+            INNER JOIN tblclients as f ON f.fac_id = a.comp_clientId 
+            WHERE comp_date BETWEEN :startDate AND :endDate  
+            ORDER BY comp_date DESC";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(":startDate",$json["startDate"]);
             $stmt->bindParam(":endDate",$json["endDate"]);
