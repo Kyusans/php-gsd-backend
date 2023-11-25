@@ -280,24 +280,31 @@
             // {"startDate":"2023-11-19 00:00:00", "endDate":"2023-11-21 11:29:06"}
             include "connection.php";
             $json = json_decode($json, true);
-            $sql = "SELECT a.comp_subject, a.comp_date, b.location_name, e.user_full_name, f.fac_name 
+            
+            $sql = "SELECT a.comp_id, a.comp_subject, a.comp_date, b.location_name, GROUP_CONCAT(CONCAT(' ', e.user_full_name)) as personnel_names, f.fac_name  
             FROM tblcomplaints as a 
             INNER JOIN tbllocation as b ON b.location_id = a.comp_locationId 
             INNER JOIN tbljoborders as c ON c.job_complaintId = a.comp_id 
             INNER JOIN tbljoborderpersonnel as d ON d.joPersonnel_joId = c.job_id 
             INNER JOIN tblusers as e ON e.user_id = d.joPersonnel_userId 
             INNER JOIN tblclients as f ON f.fac_id = a.comp_clientId 
-            WHERE comp_date BETWEEN :startDate AND :endDate  
+            WHERE comp_date BETWEEN :startDate AND :endDate 
+            GROUP BY a.comp_id 
             ORDER BY comp_date DESC";
+    
+        
             $stmt = $conn->prepare($sql);
-            $stmt->bindParam(":startDate",$json["startDate"]);
-            $stmt->bindParam(":endDate",$json["endDate"]);
+            $stmt->bindParam(":startDate", $json["startDate"]);
+            $stmt->bindParam(":endDate", $json["endDate"]);
             $stmt->execute();
+        
             $returnValue = 0;
+        
             if($stmt->rowCount() > 0){
                 $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 $returnValue = json_encode($rs);
             }
+        
             return $returnValue;
         }
 
@@ -310,6 +317,19 @@
             $stmt->execute();
             return $stmt->rowCount() > 0 ? 1 : 0;
         }
+
+        function updateLocation($json){
+            // {"newLocationName":"CL3", "locationId": 4}
+            include "connection.php";
+            $json = json_decode($json, true);
+            $sql = "UPDATE tbllocation SET location_name = :newLocationName WHERE location_id = :locationId ";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(":newLocationName", $json["newLocationName"]);
+            $stmt->bindParam(":locationId", $json["locationId"]);
+            $stmt->execute();
+            return $stmt->rowCount() > 0 ? 1 : 0;
+        }
+
     }// admin class
 
     function getTokenForUserId($userId){
@@ -371,6 +391,9 @@
             break;
         case "reopenJob":
             echo $admin->reopenJob($json);
+            break;
+        case "updateLocation":
+            echo $admin->updateLocation($json);
             break;
     }
 ?>
