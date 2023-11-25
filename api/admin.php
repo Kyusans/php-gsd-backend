@@ -330,6 +330,17 @@
             return $stmt->rowCount() > 0 ? 1 : 0;
         }
 
+        function deleteLocation($json){
+            // {"locationId": 4}
+            include "connection.php";
+            $json = json_decode($json, true);
+            $sql = "DELETE FROM tbllocation WHERE location_id = :locationId";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(":locationId", $json["locationId"]);
+            $stmt->execute();
+            return $stmt->rowCount() > 0 ? 1 : 0;
+        }
+
     }// admin class
 
     function getTokenForUserId($userId){
@@ -394,6 +405,9 @@
             break;
         case "updateLocation":
             echo $admin->updateLocation($json);
+            break;
+        case "deleteLocation":
+            echo $admin->deleteLocation($json);
             break;
     }
 ?>
