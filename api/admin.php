@@ -180,6 +180,16 @@
                         $stmt->bindParam(":compId", $master["ticketNumber"]);
                         $stmt->execute();
 
+                        $defaultComment = "Hi Maam/Sir! A job order has been created for this ticket. A GSD personnel is going to contact you soon!";
+                        $date = getCurrentDate();
+                        $sql = "INSERT INTO tblcomments(comment_complaintId, comment_userId, comment_commentText, comment_date) ";
+                        $sql .= "VALUES(:compId, :userId, :comment, :date)";
+                        $stmt = $conn->prepare($sql);
+                        $stmt->bindParam(':compId', $master["ticketNumber"]);
+                        $stmt->bindParam(':userId', $master["jobCreatedBy"]);
+                        $stmt->bindParam(':comment', $defaultComment);
+                        $stmt->bindParam(':date', $date); 
+                        $stmt->execute();
                         //{"compId": 1, "userId":"2", "commentText" : "humana nani"}
                         if($stmt->rowCount() > 0 && $master["additionalComment"] !== null){
                             $date = getCurrentDate();
