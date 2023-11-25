@@ -290,6 +290,16 @@
             }
             return $returnValue;
         }
+
+        function reopenJob($json){
+            include "connection.php";
+            $json = json_decode($json, true);
+            $sql = "UPDATE tblcomplaints SET comp_status = 2 WHERE comp_id = :compId";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(":compId", $json["compId"]);
+            $stmt->execute();
+            return $stmt->rowCount() > 0 ? 1 : 0;
+        }
     }// admin class
 
     function getTokenForUserId($userId){
@@ -348,6 +358,9 @@
             break;
         case "getTicketsByDate":
             echo $admin->getTicketsByDate($json);
+            break;
+        case "reopenJob":
+            echo $admin->reopenJob($json);
             break;
     }
 ?>
