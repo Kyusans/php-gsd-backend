@@ -341,6 +341,18 @@
             return $stmt->rowCount() > 0 ? 1 : 0;
         }
 
+        function updateLocationCategory($json){
+            // {"newLocationCategName":"Computer Labs", "locationCategId": 1}
+            include "connection.php";
+            $json = json_decode($json, true);
+            $sql = "UPDATE tbllocationcategory SET locCateg_name = :newLocationCategName WHERE locCateg_id = :locationCategId";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(":newLocationCategName", $json["newLocationCategName"]);
+            $stmt->bindParam(":locationCategId", $json["locationCategId"]);
+            $stmt->execute();
+            return $stmt->rowCount() > 0 ? 1 : 0;
+        }
+
     }// admin class
 
     function getTokenForUserId($userId){
@@ -408,6 +420,9 @@
             break;
         case "deleteLocation":
             echo $admin->deleteLocation($json);
+            break;
+        case "updateLocationCategory":
+            echo $admin->updateLocationCategory($json);
             break;
     }
 ?>
