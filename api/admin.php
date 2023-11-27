@@ -55,7 +55,7 @@
         function getLocations($json){
             include "connection.php";
             $json = json_decode($json, true);
-            $sql = "SELECT tbllocation.location_id, tbllocation.location_name, tbllocationcategory.locCateg_name ";
+            $sql = "SELECT tbllocation.location_id, tbllocation.location_name, tbllocationcategory.locCateg_name, tbllocationcategory.locCateg_id ";
             $sql .= "FROM tbllocation INNER JOIN tbllocationcategory ";
             $sql .= "ON tbllocation.location_categoryId = tbllocationcategory.locCateg_id ";
             $sql .= "WHERE tbllocationcategory.locCateg_id = :categoryId";
@@ -353,6 +353,22 @@
             return $stmt->rowCount() > 0 ? 1 : 0;
         }
 
+        function addPesonnel($json){
+            // { "username": "john_doe", "password": "secure_password", "userFullname": "John Doe", "email": "john.doe@example.com", "contact": "1234567890" }   
+            include "connection.php";
+            $json = json_decode($json, true);
+            $sql = "INSERT INTO tblusers(user_username, user_password, user_full_name, user_email, user_contact)  
+            VALUES(:username, :password, :userFullname, :email, :contact)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(":username", $json["username"]);
+            $stmt->bindParam(":password", $json["password"]);
+            $stmt->bindParam(":userFullname", $json["userFullname"]);
+            $stmt->bindParam(":email", $json["email"]);
+            $stmt->bindParam(":contact", $json["contact"]);
+            $stmt->execute();
+            return $stmt->rowCount() > 0 ? 1 : 0;
+        }
+
     }// admin class
 
     function getTokenForUserId($userId){
@@ -423,6 +439,9 @@
             break;
         case "updateLocationCategory":
             echo $admin->updateLocationCategory($json);
+            break;
+        case "addPesonnel":
+            echo $admin->addPesonnel($json);
             break;
     }
 ?>
