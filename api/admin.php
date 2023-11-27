@@ -353,21 +353,29 @@
             return $stmt->rowCount() > 0 ? 1 : 0;
         }
 
-        function addPesonnel($json){
-            // { "username": "john_doe", "password": "secure_password", "userFullname": "John Doe", "email": "john.doe@example.com", "contact": "1234567890" }   
+        function addPersonnel($json){
             include "connection.php";
             $json = json_decode($json, true);
-            $sql = "INSERT INTO tblusers(user_username, user_password, user_full_name, user_email, user_contact)  
-            VALUES(:username, :password, :userFullname, :email, :contact)";
-            $stmt = $conn->prepare($sql);
-            $stmt->bindParam(":username", $json["username"]);
-            $stmt->bindParam(":password", $json["password"]);
-            $stmt->bindParam(":userFullname", $json["userFullname"]);
-            $stmt->bindParam(":email", $json["email"]);
-            $stmt->bindParam(":contact", $json["contact"]);
-            $stmt->execute();
-            return $stmt->rowCount() > 0 ? 1 : 0;
+            $checkSql = "SELECT COUNT(*) FROM tblusers WHERE user_username = :username";
+            $checkStmt = $conn->prepare($checkSql);
+            $checkStmt->bindParam(":username", $json["username"]);
+            $checkStmt->execute();
+            $usernameExists = $checkStmt->fetchColumn();
+            if ($usernameExists > 0) {
+                return 2;
+            }
+            $insertSql = "INSERT INTO tblusers (user_username, user_password, user_full_name, user_email, user_contact, user_level)  
+                          VALUES (:username, :password, :userFullname, :email, :contact, 90)";
+            $insertStmt = $conn->prepare($insertSql);
+            $insertStmt->bindParam(":username", $json["username"]);
+            $insertStmt->bindParam(":password", $json["password"]);
+            $insertStmt->bindParam(":userFullname", $json["userFullname"]);
+            $insertStmt->bindParam(":email", $json["email"]);
+            $insertStmt->bindParam(":contact", $json["contact"]);
+            $insertStmt->execute();
+            return $insertStmt->rowCount() > 0 ? 1 : 0;
         }
+        
 
     }// admin class
 
@@ -441,7 +449,7 @@
             echo $admin->updateLocationCategory($json);
             break;
         case "addPesonnel":
-            echo $admin->addPesonnel($json);
+            echo $admin->addPersonnel($json);
             break;
     }
 ?>
