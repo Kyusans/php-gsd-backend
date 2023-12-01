@@ -40,7 +40,7 @@
 
         function getLocationCategory(){
             include "connection.php";
-            $sql = "SELECT * FROM tbllocationcategory";
+            $sql = "SELECT * FROM tbllocationcategory ORDER BY locCateg_name";
             $stmt = $conn->prepare($sql);
             $returnValue = 0;
             if($stmt->execute()){
@@ -58,7 +58,7 @@
             $sql = "SELECT tbllocation.location_id, tbllocation.location_name, tbllocationcategory.locCateg_name, tbllocationcategory.locCateg_id ";
             $sql .= "FROM tbllocation INNER JOIN tbllocationcategory ";
             $sql .= "ON tbllocation.location_categoryId = tbllocationcategory.locCateg_id ";
-            $sql .= "WHERE tbllocationcategory.locCateg_id = :categoryId";
+            $sql .= "WHERE tbllocationcategory.locCateg_id = :categoryId ORDER BY tbllocation.location_name";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(":categoryId", $json["categoryId"]);
             $returnValue = 0;
@@ -112,7 +112,7 @@
 
         function getAllPersonnel(){
             include "connection.php";
-            $sql = "SELECT * FROM tblusers WHERE user_level = 90";
+            $sql = "SELECT * FROM tblusers WHERE user_level = 90 ORDER BY user_username";
             $stmt = $conn->prepare($sql);
             $returnValue = 0;
             if($stmt->execute()){
@@ -259,12 +259,14 @@
         }
 
         function getAssignedPersonnel($json){
+            // {"jobId":3}
             include "connection.php";
             $json = json_decode($json, true);
-            $sql = "SELECT b.user_full_name ";
-            $sql .= "FROM tbljoborderpersonnel as a ";
-            $sql .= "INNER JOIN tblusers as b ON a.joPersonnel_userId = b.user_id ";
-            $sql .= "WHERE a.joPersonnel_joId = :jobId";
+            $sql = "SELECT b.user_full_name 
+            FROM tbljoborderpersonnel as a 
+            INNER JOIN tblusers as b ON a.joPersonnel_userId = b.user_id 
+            WHERE a.joPersonnel_joId = :jobId  
+            ORDER BY user_full_name ";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(":jobId", $json["jobId"]);
             $stmt->execute();
@@ -448,7 +450,7 @@
         case "updateLocationCategory":
             echo $admin->updateLocationCategory($json);
             break;
-        case "addPesonnel":
+        case "addPersonnel":
             echo $admin->addPersonnel($json);
             break;
     }
