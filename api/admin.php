@@ -38,17 +38,30 @@
             include "connection.php";
             $json = json_decode($json, true);
             $locationCategory = $json["locationCategory"];
+            
+            $checkDuplicateSql = "SELECT COUNT(*) as count FROM tbllocationcategory WHERE locCateg_name = :locationCategory";
+            $checkDuplicateStmt = $conn->prepare($checkDuplicateSql);
+            $checkDuplicateStmt->bindParam(":locationCategory", $locationCategory);
+            $checkDuplicateStmt->execute();
+            $duplicateCount = $checkDuplicateStmt->fetch(PDO::FETCH_ASSOC)['count'];
+            
+            if ($duplicateCount > 0) {
+                return 2;
+            }
+            
             $sql = "INSERT INTO tbllocationcategory(locCateg_name) VALUES(:locationCategory)";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(":locationCategory", $locationCategory);
             $returnValue = 0;
-
-            if($stmt->execute()){
-                if($stmt->rowCount() > 0){
-                   $returnValue = 1;
+            
+            if ($stmt->execute()) {
+                if ($stmt->rowCount() > 0) {
+                    $returnValue = 1;
                 }
             }
+            
             return $returnValue;
+            
         }
 
         function getLocationCategory(){
