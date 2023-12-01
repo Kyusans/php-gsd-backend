@@ -7,18 +7,31 @@
             $json = json_decode($json, true);
             $location = $json["location"];
             $categoryId = $json["categoryId"];
+            
+            $checkDuplicateSql = "SELECT COUNT(*) as count FROM tbllocation WHERE location_name = :location";
+            $checkDuplicateStmt = $conn->prepare($checkDuplicateSql);
+            $checkDuplicateStmt->bindParam(":location", $location);
+            $checkDuplicateStmt->execute();
+            $duplicateCount = $checkDuplicateStmt->fetch(PDO::FETCH_ASSOC)['count'];
+            
+            if ($duplicateCount > 0) {
+                return 2;
+            }
+            
             $sql = "INSERT INTO tbllocation(location_name, location_categoryId) VALUES(:location, :categoryId)";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(":location", $location);
             $stmt->bindParam(":categoryId", $categoryId);
             $returnValue = 0;
-
-            if($stmt->execute()){
-                if($stmt->rowCount() > 0){
-                   $returnValue = 1;
+            
+            if ($stmt->execute()) {
+                if ($stmt->rowCount() > 0) {
+                    $returnValue = 1;
                 }
             }
+            
             return $returnValue;
+            
         }
         
         function addLocationCategory($json){
