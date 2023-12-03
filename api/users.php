@@ -181,6 +181,26 @@
             return $stmt->rowCount() > 0 ? 1 : 0; 
         }
 
+        function getLastUser($json){
+            include "connection.php";
+            $json = json_decode($json, true);
+            $sql = "SELECT a.full_name 
+            FROM vwusers as a 
+            INNER JOIN tblcomments as b ON b.comment_userId = a.user_id 
+            WHERE b.comment_complaintId = :compId 
+            ORDER BY b.comment_date DESC 
+            LIMIT 1";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(":compId", $json["compId"]);
+            $returnValue = 0;
+            $stmt->execute();
+            if($stmt->rowCount() > 0) {
+                $rs = $stmt->fetch(PDO::FETCH_ASSOC);
+                $returnValue = json_encode($rs);
+            }
+            return $returnValue;
+        }
+
     }//User
 
     function getCurrentUserPassword($json){
@@ -288,6 +308,9 @@
             break;
         case "updateTicket":
             echo $user->updateTicket($json);
+            break;
+        case "getLastUser":
+            echo $user->getLastUser($json);
             break;
     }
 ?>
