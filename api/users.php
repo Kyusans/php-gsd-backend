@@ -73,17 +73,35 @@
         function addComment($json){
             //{"compId": 1, "userId":"2", "commentText" : "humana nani"}
             include "connection.php";
-            $json = json_decode($json, true);
-            $date = getCurrentDate();
-            $sql = "INSERT INTO tblcomments(comment_complaintId, comment_userId, comment_commentText, comment_date) ";
-            $sql .= "VALUES(:compId, :userId, :commentText, :date)";
-            $stmt = $conn->prepare($sql);
-            $stmt->bindParam(':compId', $json["compId"]);
-            $stmt->bindParam(':userId', $json["userId"]);
-            $stmt->bindParam(':commentText', $json["commentText"]);
-            $stmt->bindParam(':date', $date); 
-            $stmt->execute();
-            return $stmt->rowCount() > 0 ? 1 : 0;
+            try {
+                $conn->beginTransaction();
+                $conn->commit();
+                $json = json_decode($json, true);
+                $date = getCurrentDate();
+                $sql = "INSERT INTO tblcomments(comment_complaintId, comment_userId, comment_commentText, comment_date) ";
+                $sql .= "VALUES(:compId, :userId, :commentText, :date)";
+                $stmt = $conn->prepare($sql);
+                $stmt->bindParam(':compId', $json["compId"]);
+                $stmt->bindParam(':userId', $json["userId"]);
+                $stmt->bindParam(':commentText', $json["commentText"]);
+                $stmt->bindParam(':date', $date); 
+                $stmt->execute();
+                if($stmt->rowCount() > 0){
+                    $sql = "UPDATE tblcomplaints SET comp_lastUser = :fullName WHERE comp_id = :compId";
+                    $stmt = $conn->prepare($sql);
+                    $stmt->bindParam(':compId', $json["compId"]);
+                    $stmt->execute();
+                }else{
+                    $conn->rollBack();
+                    return 0;
+                }
+                return 1;
+            } catch (Exception $e) {
+                $conn->rollBack();
+                return 0;
+            }
+
+            // return $stmt->rowCount() > 0 ? 1 : 0;
         }
         
         function getComment($json){
@@ -181,25 +199,6 @@
             return $stmt->rowCount() > 0 ? 1 : 0; 
         }
 
-        function getLastUser($json){
-            include "connection.php";
-            $json = json_decode($json, true);
-            $sql = "SELECT a.full_name 
-            FROM vwusers as a 
-            INNER JOIN tblcomments as b ON b.comment_userId = a.user_id 
-            WHERE b.comment_complaintId = :compId 
-            ORDER BY b.comment_date DESC 
-            LIMIT 1";
-            $stmt = $conn->prepare($sql);
-            $stmt->bindParam(":compId", $json["compId"]);
-            $returnValue = 0;
-            $stmt->execute();
-            if($stmt->rowCount() > 0) {
-                $rs = $stmt->fetch(PDO::FETCH_ASSOC);
-                $returnValue = json_encode($rs);
-            }
-            return $returnValue;
-        }
 
     }//User
 
@@ -308,9 +307,6 @@
             break;
         case "updateTicket":
             echo $user->updateTicket($json);
-            break;
-        case "getLastUser":
-            echo $user->getLastUser($json);
             break;
     }
 ?>
