@@ -28,7 +28,7 @@
         function getJobsByStatus($json) {
             include "connection.php";
             $json = json_decode($json, true);
-            $sql = "SELECT b.job_title, b.job_description, b.job_createDate, b.job_complaintId, d.joStatus_name, e.priority_name ";
+            $sql = "SELECT b.job_title, b.job_description, b.job_createDate, b.job_complaintId, c.comp_lastUser, d.joStatus_name, e.priority_name ";
             $sql .= "FROM tbljoborderpersonnel as a ";
             $sql .= "INNER JOIN tbljoborders as b ON a.joPersonnel_joId = b.job_id ";
             $sql .= "INNER JOIN tblcomplaints as c ON b.job_complaintId = c.comp_id ";
@@ -60,7 +60,7 @@
         function getSelectedStatus($json){
             include "connection.php";
             $json = json_decode($json, true);
-            $sql = "SELECT b.job_title, b.job_description, b.job_createDate, b.job_complaintId, d.joStatus_name, e.priority_name 
+            $sql = "SELECT b.job_title, b.job_description, b.job_createDate, b.job_complaintId, c.comp_lastUser, d.joStatus_name, e.priority_name 
             FROM tbljoborderpersonnel as a 
             INNER JOIN tbljoborders as b ON a.joPersonnel_joId = b.job_id 
             INNER JOIN tblcomplaints as c ON b.job_complaintId = c.comp_id 
