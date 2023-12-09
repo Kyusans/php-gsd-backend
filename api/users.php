@@ -200,6 +200,22 @@
             return $stmt->rowCount() > 0 ? 1 : 0; 
         }
 
+        function getSelectedStatus($json){
+            include "connection.php";
+            $json = json_decode($json, true);
+            $sql = "SELECT * FROM tblcomplaints WHERE comp_clientId = :userId AND comp_status = :status ORDER BY comp_id DESC";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(":userId", $json["userId"]);
+            $stmt->bindParam(":status", $json["status"]);
+            $returnValue = 0;
+            $stmt->execute();
+            if($stmt->rowCount() > 0){
+                $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $returnValue = json_encode($rs);
+            }
+            return $returnValue;
+        }
+
 
     }//User
 
@@ -308,6 +324,9 @@
             break;
         case "updateTicket":
             echo $user->updateTicket($json);
+            break;
+        case "getSelectedStatus":
+            echo $user->getSelectedStatus($json);
             break;
     }
 ?>

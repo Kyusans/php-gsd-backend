@@ -57,6 +57,7 @@
             return $stmt->rowCount() > 0 ? 1 : 0;
         }
 
+        //priority diay ni hehe
         function getSelectedStatus($json){
             include "connection.php";
             $json = json_decode($json, true);
@@ -78,7 +79,7 @@
             }
             return $returnValue;
         }
-    }
+    }// personnel
 
     $json = isset($_POST["json"]) ? $_POST["json"] : "0";
     $operation = isset($_POST["operation"]) ? $_POST["operation"] : "0";
