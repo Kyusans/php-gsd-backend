@@ -90,6 +90,7 @@
                     $sql = "UPDATE tblcomplaints SET comp_lastUser = :fullName WHERE comp_id = :compId";
                     $stmt = $conn->prepare($sql);
                     $stmt->bindParam(':compId', $json["compId"]);
+                    $stmt->bindParam(":fullName", $json["fullName"]);
                     $stmt->execute();
                 }else{
                     $conn->rollBack();
