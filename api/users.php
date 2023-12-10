@@ -32,17 +32,39 @@
             include "connection.php";
             require_once "sendNotification.php";
             $json = json_decode($json, true);
-            $date = getCurrentDate();
-            // {"clientId":"1", "locationId":"1", "subject":"guba aircon", "description":"nibuto ang aircon lmao", "status":"1", "locationCategoryId": "1"}
-            $sql = "INSERT INTO tblcomplaints(comp_clientId, comp_locationId, comp_subject, comp_description, comp_locationCategoryId, comp_date) ";
-            $sql .= "VALUES(:clientId, :locationId, :subject, :description, :locationCategoryId, :date)";
+
+            $returnValueImage = uploadImage();
+            // return $returnValueImage;
+            
+            switch($returnValueImage){
+                case 2:
+                    // You cannot Upload files of this type!
+                    return 2;
+                    break;
+                case 3:
+                    // There was an error uploading your file!
+                    return 3;
+                    break;
+                case 4:
+                    // Your file is too big (25mb maximum)
+                    return 4;
+                    break;
+                default:
+                    break;
+            }
+        
+            $sql = "INSERT INTO tblcomplaints(comp_clientId, comp_locationId, comp_subject, comp_description, comp_locationCategoryId, comp_date, comp_end_date, comp_image) ";
+            $sql .= "VALUES(:clientId, :locationId, :subject, :description, :locationCategoryId, :startDate, :endDate, :image)";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(":clientId", $json["clientId"]);
             $stmt->bindParam(":locationId", $json["locationId"]);
             $stmt->bindParam(":subject", $json["subject"]);
             $stmt->bindParam(":description", $json["description"]);
             $stmt->bindParam(":locationCategoryId", $json["locationCategoryId"]);
-            $stmt->bindParam(":date", $date);
+            $stmt->bindParam(":startDate", $json["startDate"]);
+            $stmt->bindParam(":endDate", $json["endDate"]);
+            $stmt->bindParam(":image", $returnValueImage);
+        
             $returnValue = 0;
             $stmt->execute();
             $returnValue = $stmt->rowCount() > 0 ? 1 : 0; 
@@ -53,6 +75,7 @@
             }
             return $returnValue;
         }
+        
 
         function getComplaints($json){
             // {"userId": 1}
@@ -218,6 +241,39 @@
 
 
     }//User
+
+    function uploadImage(){
+        $file = $_FILES['file'];
+        print_r($file);
+        $fileName = $_FILES['file']['name'];
+        $fileTmpName = $_FILES['file']['tmp_name'];
+        $fileSize = $_FILES['file']['size'];
+        $fileError = $_FILES['file']['error'];
+        $fileType = $_FILES['file']['name'];
+
+        $fileExt = explode(".", $fileName);
+        $fileActualExt = strtolower(end($fileExt));
+
+        $allowed = array("jpg", "jpeg", "png");
+
+        if(in_array($fileActualExt, $allowed)){
+            if($fileError === 0){
+                if($fileSize < 25000000){
+                    $fileNameNew = uniqid("", true) . "." .$fileActualExt;
+                    $fileDestination =  'images/' . $fileNameNew;
+                    move_uploaded_file($fileTmpName, $fileDestination);
+                    return $fileNameNew;
+                }else{
+                    return 4;
+                }
+            }else{
+                return 3;
+            }
+        }else{
+            return 2;
+        }
+    }
+    
 
     function getCurrentUserPassword($json){
         include "connection.php";
