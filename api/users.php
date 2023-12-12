@@ -37,11 +37,11 @@ class User
 
         $date = getCurrentDate();
         $endDate = $json["endDate"];
-        
+
         if ($endDate . ' 23:59:59' < $date) {
             return 5;
         }
-        
+
         $returnValueImage = uploadImage();
         // return $returnValueImage;
 
@@ -103,13 +103,29 @@ class User
             $conn->beginTransaction();
             $conn->commit();
             $json = json_decode($json, true);
+            $returnValueImage = uploadImage();
+
+            switch ($returnValueImage) {
+                case 2:
+                    // You cannot Upload files of this type!
+                    return 2;
+                case 3:
+                    // There was an error uploading your file!
+                    return 3;
+                case 4:
+                    // Your file is too big (25mb maximum)
+                    return 4;
+                default:
+                    break;
+            }
             $date = getCurrentDate();
-            $sql = "INSERT INTO tblcomments(comment_complaintId, comment_userId, comment_commentText, comment_date) ";
-            $sql .= "VALUES(:compId, :userId, :commentText, :date)";
+            $sql = "INSERT INTO tblcomments(comment_complaintId, comment_userId, comment_commentText, comment_commentImage, comment_date) ";
+            $sql .= "VALUES(:compId, :userId, :commentText, :image, :date)";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':compId', $json["compId"]);
             $stmt->bindParam(':userId', $json["userId"]);
             $stmt->bindParam(':commentText', $json["commentText"]);
+            $stmt->bindParam(':image', $returnValueImage);
             $stmt->bindParam(':date', $date);
             $stmt->execute();
             if ($stmt->rowCount() > 0) {
@@ -135,7 +151,7 @@ class User
     {
         include "connection.php";
         $json = json_decode($json, true);
-        $sql = "SELECT c.comment_commentText, c.comment_date, a.full_name, a.user_id ";
+        $sql = "SELECT c.comment_commentText, c.comment_commentImage, c.comment_date, a.full_name, a.user_id ";
         $sql .= "FROM vwusers as a ";
         $sql .= "INNER JOIN tblcomments as c ON c.comment_userId = a.user_id ";
         $sql .= "WHERE c.comment_complaintId = :compId ORDER BY c.comment_id DESC";
@@ -222,7 +238,7 @@ class User
         $json = json_decode($json, true);
         $date = getCurrentDate();
         $endDate = $json["endDate"];
-        
+
         if ($endDate . ' 23:59:59' < $date) {
             return 5;
         }
@@ -260,7 +276,7 @@ class User
 
 function uploadImage()
 {
-    if(isset($_FILES["file"])){
+    if (isset($_FILES["file"])) {
         $file = $_FILES['file'];
         // print_r($file);
         $fileName = $_FILES['file']['name'];
@@ -268,12 +284,12 @@ function uploadImage()
         $fileSize = $_FILES['file']['size'];
         $fileError = $_FILES['file']['error'];
         // $fileType = $_FILES['file']['type'];
-    
+
         $fileExt = explode(".", $fileName);
         $fileActualExt = strtolower(end($fileExt));
-    
+
         $allowed = array("jpg", "jpeg", "png");
-    
+
         if (in_array($fileActualExt, $allowed)) {
             if ($fileError === 0) {
                 if ($fileSize < 25000000) {
@@ -290,7 +306,7 @@ function uploadImage()
         } else {
             return 2;
         }
-    }else{
+    } else {
         return "";
     }
 }
