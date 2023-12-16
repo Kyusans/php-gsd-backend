@@ -378,25 +378,6 @@ function getAdminTokens()
     return $returnValue;
 }
 
-
-// function getUserToken($json)
-// {
-//     include 'connection.php';
-//     $json = json_decode($json, true);
-//     $sql = "SELECT tkn_token FROM tbltokens WHERE tkn_userId = :userId";
-//     $stmt = $conn->prepare($sql);
-//     $stmt->bindParam(":userId", $json["userId"]);
-//     $stmt->execute();
-//     $returnValue = [];
-//     if ($stmt->rowCount() > 0) {
-//         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-//         foreach ($rows as $row) {
-//             $returnValue[] = json_decode($row['tkn_token'], true);
-//         }
-//     }
-//     return $returnValue;
-// }
-
 function adminLogin($json)
 {
     include "connection.php";
@@ -442,9 +423,6 @@ switch ($operation) {
     case "insertToken":
         echo $user->insertToken($json);
         break;
-    // case "getUserToken":
-    //     echo getUserToken($json);
-    //     break;
     case "changePassword":
         echo $user->changePassword($json);
         break;
