@@ -18,11 +18,11 @@ class Notification
         $webPush = new WebPush($auth);
         $url = 'https://coc-studentinfo.net/gsd/';
         $payload = ['title' => $message, 'body' => $subject, 'url' => $url];
-        $tokenArray = json_decode($token, true);
+        $tokenArray = $token;
 
         try {
             if ($tokenArray !== null) {
-                $subscription = Subscription::create($tokenArray, true);
+                $subscription = Subscription::create($tokenArray);
                 $webPush->sendOneNotification($subscription, json_encode($payload), ['TTL' => 5000]);
             }
         } catch (TypeError $e) {

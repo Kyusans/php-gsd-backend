@@ -32,7 +32,9 @@ class User
 
     function addComplaint($json)
     {
+        // {"subject":"Complaint ko to","clientId":"13","locationId":"1","locationCategoryId":"1","description":"Description ko to","endDate":"2023-12-18"}
         include "connection.php";
+        require_once "sendNotification.php";
         $json = json_decode($json, true);
 
         $date = getCurrentDate();
@@ -74,6 +76,14 @@ class User
         $returnValue = 0;
         $stmt->execute();
         $returnValue = $stmt->rowCount() > 0 ? 1 : 0;
+        if ($returnValue == 1) {
+            $tokens = getAdminTokens();
+
+            foreach ($tokens as $token) {
+                $notification = new Notification();
+                $notification->sendNotif($token, $json["subject"], "New complaint ticket");
+            }
+        }
         return $returnValue;
     }
 
@@ -170,10 +180,10 @@ class User
     {
         include "connection.php";
         $json = json_decode($json, true);
-        $sql = "UPDATE tblusers SET user_token = :token WHERE user_id = :userId;";
+        $sql = "INSERT INTO tbltokens(tkn_userId, tkn_token) VALUES(:userId, :token)";
         $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':token', $json['token']);
         $stmt->bindParam(':userId', $json['userId']);
+        $stmt->bindParam(':token', $json['token']);
         $stmt->execute();
         return $stmt->rowCount() > 0 ? 1 : 0;
     }
@@ -350,18 +360,42 @@ function getCurrentDate()
     return $today->format('Y-m-d H:i:s');
 }
 
-function getAdminToken()
+function getAdminTokens()
 {
     include 'connection.php';
-    $sql = "SELECT user_token FROM tblusers WHERE user_level = 100";
+    $sql = "SELECT tkn_token FROM tbltokens WHERE tkn_userId = 1";
     $stmt = $conn->prepare($sql);
     $stmt->execute();
+    $returnValue = [];
+
     if ($stmt->rowCount() > 0) {
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $row['user_token'];
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($rows as $row) {
+            $returnValue[] = json_decode($row['tkn_token'], true);
+        }
     }
-    return 0;
+
+    return $returnValue;
 }
+
+
+// function getUserToken($json)
+// {
+//     include 'connection.php';
+//     $json = json_decode($json, true);
+//     $sql = "SELECT tkn_token FROM tbltokens WHERE tkn_userId = :userId";
+//     $stmt = $conn->prepare($sql);
+//     $stmt->bindParam(":userId", $json["userId"]);
+//     $stmt->execute();
+//     $returnValue = [];
+//     if ($stmt->rowCount() > 0) {
+//         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+//         foreach ($rows as $row) {
+//             $returnValue[] = json_decode($row['tkn_token'], true);
+//         }
+//     }
+//     return $returnValue;
+// }
 
 function adminLogin($json)
 {
@@ -408,9 +442,9 @@ switch ($operation) {
     case "insertToken":
         echo $user->insertToken($json);
         break;
-    case "getAdminToken":
-        echo getAdminToken();
-        break;
+    // case "getUserToken":
+    //     echo getUserToken($json);
+    //     break;
     case "changePassword":
         echo $user->changePassword($json);
         break;
