@@ -50,9 +50,10 @@
         function jobDone($json){
             include "connection.php";
             $json = json_decode($json, true);
-            $sql = "UPDATE tblcomplaints SET comp_status = 3 WHERE comp_id = :compId";
+            $sql = "UPDATE tblcomplaints SET comp_status = 3, comp_closedBy = :fullName WHERE comp_id = :compId";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(":compId", $json["compId"]);
+            $stmt->bindParam(":fullName", $json["fullName"]);
             $stmt->execute();
             return $stmt->rowCount() > 0 ? 1 : 0;
         }

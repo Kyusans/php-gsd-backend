@@ -253,18 +253,18 @@ class Admin
     function getJobDetails($json)
     {
         include "connection.php";
-        // {"compId": 14}
+        // {"compId": 69}
         $json = json_decode($json, true);
-        $sql = "SELECT a.comp_subject, a.comp_image, a.comp_id, b.location_name, c.locCateg_name, d.job_id, d.job_description, d.job_createDate, e.priority_name, f.fac_name, g.user_full_name, h.joStatus_name, h.joStatus_id ";
-        $sql .= "FROM tblcomplaints as a ";
-        $sql .= "INNER JOIN tbllocation as b ON a.comp_locationId = b.location_id ";
-        $sql .= "INNER JOIN tbllocationcategory as c ON a.comp_locationCategoryId = c.locCateg_id ";
-        $sql .= "INNER JOIN tbljoborders as d ON d.job_complaintId = a.comp_id ";
-        $sql .= "INNER JOIN tblpriority as e ON d.job_priority = e.priority_id ";
-        $sql .= "INNER JOIN tblclients as f ON f.fac_id = a.comp_clientId ";
-        $sql .= "INNER JOIN tblusers as g ON g.user_id = d.job_createdBy ";
-        $sql .= "INNER JOIN tbljoborderstatus as h ON a.comp_status = h.joStatus_id ";
-        $sql .= "WHERE a.comp_id = :compId";
+        $sql = "SELECT a.comp_subject, a.comp_image, a.comp_id, a.comp_closedBy, b.location_name, c.locCateg_name, d.job_id, d.job_description, d.job_createDate, e.priority_name, f.fac_name, g.user_full_name, h.joStatus_name, h.joStatus_id 
+        FROM tblcomplaints as a 
+        INNER JOIN tbllocation as b ON a.comp_locationId = b.location_id 
+        INNER JOIN tbllocationcategory as c ON a.comp_locationCategoryId = c.locCateg_id 
+        INNER JOIN tbljoborders as d ON d.job_complaintId = a.comp_id 
+        INNER JOIN tblpriority as e ON d.job_priority = e.priority_id 
+        INNER JOIN tblclients as f ON f.fac_id = a.comp_clientId 
+        INNER JOIN tblusers as g ON g.user_id = d.job_createdBy 
+        INNER JOIN tbljoborderstatus as h ON a.comp_status = h.joStatus_id 
+        WHERE a.comp_id = :compId";
         // echo "sql: " . $sql;
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(":compId", $json["compId"]);
