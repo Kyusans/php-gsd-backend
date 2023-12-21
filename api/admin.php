@@ -354,12 +354,35 @@ class Admin
     function reopenJob($json)
     {
         include "connection.php";
+        include "users.php";
+        require_once "sendNotification.php";
         $json = json_decode($json, true);
-        $sql = "UPDATE tblcomplaints SET comp_status = 2 WHERE comp_id = :compId";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(":compId", $json["compId"]);
-        $stmt->execute();
-        return $stmt->rowCount() > 0 ? 1 : 0;
+
+        try {
+            $conn->beginTransaction();
+
+            $sql = "UPDATE tblcomplaints SET comp_status = 2 WHERE comp_id = :compId";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(":compId", $json["compId"]);
+            $stmt->execute();
+
+            if ($stmt->rowCount() > 0) {
+                $date = getCurrentDate();
+                $sql = "INSERT INTO tblcomments(comment_complaintId, comment_userId, comment_commentText, comment_date) ";
+                $sql .= "VALUES(:compId, :userId, :comment, :date)";
+                $stmt = $conn->prepare($sql);
+                $stmt->bindParam(':compId', $json['compId']);
+                $stmt->bindParam(':userId', $json['userId']);
+                $stmt->bindParam(':comment', $json['comment']);
+                $stmt->bindParam(':date', $date);
+                $stmt->execute();
+            }
+            $conn->commit();
+            return 1;
+        } catch (Exception $e) {
+            $conn->rollBack();
+            return 0;
+        }
     }
 
     function updateLocation($json)
@@ -446,7 +469,7 @@ function getUserToken($json)
     include 'connection.php';
     $json = json_decode($json, true);
     $sql = "SELECT tkn_token FROM tbltokens WHERE tkn_userId = :userId";
-    
+
     $stmt = $conn->prepare($sql);
     $stmt->bindParam(":userId", $json["userId"]);
     $stmt->execute();

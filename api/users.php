@@ -38,9 +38,9 @@ class User
         $json = json_decode($json, true);
 
         $date = getCurrentDate();
-        $endDate = $json["endDate"];
+        $endDate = $json["endDate"] . ' 23:59:59';
 
-        if ($endDate . ' 23:59:59' < $date) {
+        if ($endDate < $date) {
             return 5;
         }
 
