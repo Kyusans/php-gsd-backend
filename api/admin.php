@@ -255,7 +255,7 @@ class Admin
         include "connection.php";
         // {"compId": 69}
         $json = json_decode($json, true);
-        $sql = "SELECT a.comp_subject, a.comp_image, a.comp_id, a.comp_closedBy, b.location_name, c.locCateg_name, d.job_id, d.job_description, d.job_createDate, e.priority_name, f.fac_name, g.user_full_name, h.joStatus_name, h.joStatus_id 
+        $sql = "SELECT a.comp_subject, a.comp_image, a.comp_id, a.comp_closedBy, a.comp_end_date, comp_date_closed, b.location_name, c.locCateg_name, d.job_id, d.job_description, d.job_createDate, e.priority_name, f.fac_name, g.user_full_name, h.joStatus_name, h.joStatus_id 
         FROM tblcomplaints as a 
         INNER JOIN tbllocation as b ON a.comp_locationId = b.location_id 
         INNER JOIN tbllocationcategory as c ON a.comp_locationCategoryId = c.locCateg_id 
