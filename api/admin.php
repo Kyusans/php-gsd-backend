@@ -65,6 +65,21 @@ class Admin
         return $returnValue;
     }
 
+    function getAllLocation()
+    {
+        include "connection.php";
+        $sql = "SELECT * FROM tbllocation ORDER BY location_id";
+        $stmt = $conn->prepare($sql);
+        $returnValue = 0;
+        if ($stmt->execute()) {
+            if ($stmt->rowCount() > 0) {
+                $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $returnValue = json_encode($rs);
+            }
+        }
+        return $returnValue;
+    }
+
     function getLocationCategory()
     {
         include "connection.php";
@@ -105,7 +120,6 @@ class Admin
         $sql = "SELECT a.*, b.joStatus_name 
             FROM tblcomplaints as a 
             INNER JOIN tbljoborderstatus as b ON a.comp_status = b.joStatus_id 
-            WHERE a.comp_status < 3 
             ORDER BY a.comp_id DESC";
 
         $stmt = $conn->prepare($sql);
@@ -118,6 +132,26 @@ class Admin
         }
         return $returnValue;
     }
+
+    // function getAllTicketsDefault()
+    // {
+    //     include "connection.php";
+    //     $sql = "SELECT a.*, b.joStatus_name 
+    //         FROM tblcomplaints as a 
+    //         INNER JOIN tbljoborderstatus as b ON a.comp_status = b.joStatus_id 
+    //         WHERE a.comp_status < 3 
+    //         ORDER BY a.comp_id DESC";
+
+    //     $stmt = $conn->prepare($sql);
+    //     $returnValue = 0;
+    //     if ($stmt->execute()) {
+    //         if ($stmt->rowCount() > 0) {
+    //             $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    //             $returnValue = json_encode($rs);
+    //         }
+    //     }
+    //     return $returnValue;
+    // }
 
     function getSelectedTicket($json)
     {
@@ -542,5 +576,8 @@ switch ($operation) {
         break;
     case "addPersonnel":
         echo $admin->addPersonnel($json);
+        break;
+    case "getAllLocation":
+        echo $admin->getAllLocation();
         break;
 }
