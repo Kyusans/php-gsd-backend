@@ -133,32 +133,12 @@ class Admin
         return $returnValue;
     }
 
-    // function getAllTicketsDefault()
-    // {
-    //     include "connection.php";
-    //     $sql = "SELECT a.*, b.joStatus_name 
-    //         FROM tblcomplaints as a 
-    //         INNER JOIN tbljoborderstatus as b ON a.comp_status = b.joStatus_id 
-    //         WHERE a.comp_status < 3 
-    //         ORDER BY a.comp_id DESC";
-
-    //     $stmt = $conn->prepare($sql);
-    //     $returnValue = 0;
-    //     if ($stmt->execute()) {
-    //         if ($stmt->rowCount() > 0) {
-    //             $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    //             $returnValue = json_encode($rs);
-    //         }
-    //     }
-    //     return $returnValue;
-    // }
-
     function getSelectedTicket($json)
     {
         // {"compId" : 2}
         include "connection.php";
         $json = json_decode($json, true);
-        $sql = "SELECT c.comp_id, c.comp_subject, c.comp_description, c.comp_image, c.comp_date, cl.fac_name, cl.fac_id, loc.location_name, lc.locCateg_name ";
+        $sql = "SELECT c.comp_id, c.comp_subject, c.comp_description, c.comp_image, c.comp_date, c.comp_end_date, cl.fac_name, cl.fac_id, loc.location_name, lc.locCateg_name ";
         $sql .= "FROM tblcomplaints AS c ";
         $sql .= "INNER JOIN tblclients AS cl ON c.comp_clientId = cl.fac_id ";
         $sql .= "INNER JOIN tbllocation AS loc ON c.comp_locationId = loc.location_id ";
@@ -239,8 +219,6 @@ class Admin
                     $stmt->execute();
 
                     $tokens = getTokenForUserId($userId);
-                    // $notification = new Notification();
-                    // $notification->sendNotif($token, $master['subject'], "New job ticket");
                     foreach ($tokens as $token) {
                         $notification = new Notification();
                         $notification->sendNotif($token, $master['subject'], "New job ticket");
@@ -358,16 +336,18 @@ class Admin
         include "connection.php";
         $json = json_decode($json, true);
 
-        $sql = "SELECT a.comp_id, a.comp_subject, a.comp_date, b.location_name, GROUP_CONCAT(CONCAT(' ', e.user_full_name)) as personnel_names, f.fac_name  
-            FROM tblcomplaints as a 
-            INNER JOIN tbllocation as b ON b.location_id = a.comp_locationId 
-            INNER JOIN tbljoborders as c ON c.job_complaintId = a.comp_id 
-            INNER JOIN tbljoborderpersonnel as d ON d.joPersonnel_joId = c.job_id 
-            INNER JOIN tblusers as e ON e.user_id = d.joPersonnel_userId 
-            INNER JOIN tblclients as f ON f.fac_id = a.comp_clientId 
-            WHERE comp_date BETWEEN :startDate AND :endDate 
-            GROUP BY a.comp_id 
-            ORDER BY comp_date DESC";
+        $sql = "SELECT a.comp_subject AS Subject, b.location_name AS Location, GROUP_CONCAT(CONCAT(' ', e.user_full_name)) as Personnel, 
+        f.fac_name as Submitted_By, g.joStatus_name AS Status, a.comp_date AS Date 
+        FROM tblcomplaints as a 
+        INNER JOIN tbllocation as b ON b.location_id = a.comp_locationId 
+        INNER JOIN tbljoborders as c ON c.job_complaintId = a.comp_id 
+        INNER JOIN tbljoborderpersonnel as d ON d.joPersonnel_joId = c.job_id 
+        INNER JOIN tblusers as e ON e.user_id = d.joPersonnel_userId 
+        INNER JOIN tblclients as f ON f.fac_id = a.comp_clientId 
+        INNER JOIN tbljoborderstatus as g on g.joStatus_id = a.comp_status 
+        WHERE comp_date BETWEEN :startDate AND :endDate 
+        GROUP BY a.comp_id 
+        ORDER BY comp_date DESC";
 
 
         $stmt = $conn->prepare($sql);
@@ -389,7 +369,6 @@ class Admin
     {
         include "connection.php";
         include "users.php";
-        require_once "sendNotification.php";
         $json = json_decode($json, true);
 
         try {
@@ -402,20 +381,20 @@ class Admin
 
             if ($stmt->rowCount() > 0) {
                 $date = getCurrentDate();
-                $sql = "INSERT INTO tblcomments(comment_complaintId, comment_userId, comment_commentText, comment_date) ";
-                $sql .= "VALUES(:compId, :userId, :comment, :date)";
-                $stmt = $conn->prepare($sql);
-                $stmt->bindParam(':compId', $json['compId']);
-                $stmt->bindParam(':userId', $json['userId']);
-                $stmt->bindParam(':comment', $json['comment']);
-                $stmt->bindParam(':date', $date);
-                $stmt->execute();
+                $sql2 = "INSERT INTO tblcomments(comment_complaintId, comment_userId, comment_commentText, comment_date) ";
+                $sql2 .= "VALUES(:compId, :userId, :comment, :date)";
+                $stmt2 = $conn->prepare($sql2);
+                $stmt2->bindParam(':compId', $json['compId']);
+                $stmt2->bindParam(':userId', $json['userId']);
+                $stmt2->bindParam(':comment', $json['comment']);
+                $stmt2->bindParam(':date', $date);
+                $stmt2->execute();
             }
             $conn->commit();
             return 1;
         } catch (Exception $e) {
             $conn->rollBack();
-            return 0;
+            return $e->getMessage();
         }
     }
 
