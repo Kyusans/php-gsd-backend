@@ -459,6 +459,22 @@ class Admin
         $insertStmt->execute();
         return $insertStmt->rowCount() > 0 ? 1 : 0;
     }
+
+    function addClient($json)
+    {
+        // {"fullName":"Joe Togan", "userId":"0912-0912", "password":"togan123", "deptId":"1"}
+        include "connection.php";
+        $json = json_decode($json, true);
+        $sql = "INSERT INTO tblclients(fac_name, fac_code, fac_password, fac_deptId, fac_status) 
+        VALUES (:fullName, :userId, :password, :deptId, 1)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':fullName', $json['fullName']);
+        $stmt->bindParam(':userId', $json['userId']);
+        $stmt->bindParam(':password', $json['password']);
+        $stmt->bindParam(':deptId', $json['deptId']);
+        $stmt->execute();
+        return $stmt->rowCount() > 0 ? 1 : 0;
+    }
 } // admin class
 
 function getTokenForUserId($userId)
@@ -558,5 +574,8 @@ switch ($operation) {
         break;
     case "getAllLocation":
         echo $admin->getAllLocation();
+        break;
+    case "addClient":
+        echo $admin->addClient($json);
         break;
 }
