@@ -78,10 +78,11 @@ class User
         $returnValue = $stmt->rowCount() > 0 ? 1 : 0;
         if ($returnValue == 1) {
             $tokens = getAdminTokens();
-
-            foreach ($tokens as $token) {
-                $notification = new Notification();
-                $notification->sendNotif($token, $json["subject"], "New complaint ticket");
+            if ($tokens !== 0) {
+                foreach ($tokens as $token) {
+                    $notification = new Notification();
+                    $notification->sendNotif($token, $json["subject"], "New complaint ticket");
+                }
             }
         }
         return $returnValue;
@@ -363,16 +364,18 @@ function getCurrentDate()
 function getAdminTokens()
 {
     include 'connection.php';
-    $sql = "SELECT tkn_token FROM tbltokens WHERE tkn_userId = 1";
+    $sql = "SELECT tkn_token FROM tbltokens WHERE tkn_userLevel = 1";
     $stmt = $conn->prepare($sql);
     $stmt->execute();
-    $returnValue = [];
+    $returnValue;
 
     if ($stmt->rowCount() > 0) {
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($rows as $row) {
             $returnValue[] = json_decode($row['tkn_token'], true);
         }
+    } else {
+        $returnValue = 0;
     }
 
     return $returnValue;
