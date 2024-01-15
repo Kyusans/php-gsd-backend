@@ -52,10 +52,15 @@
             include "users.php";
             $date = getCurrentDate();
             $json = json_decode($json, true);
-            $sql = "UPDATE tblcomplaints SET comp_status = 3, comp_closedBy = :fullName, comp_date_closed = :closedDate WHERE comp_id = :compId";
+            $sql = "UPDATE tblcomplaints 
+            SET comp_status = 3, comp_closedBy = :fullName, comp_date_closed = :closedDate , comp_item = :item, comp_operation = :operation, comp_remark = :remarks
+            WHERE comp_id = :compId";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(":compId", $json["compId"]);
             $stmt->bindParam(":fullName", $json["fullName"]);
+            $stmt->bindParam(":item", $json["item"]);
+            $stmt->bindParam(":operation", $json["jobOperation"]);
+            $stmt->bindParam(":remarks", $json["remarks"]);
             $stmt->bindParam(":closedDate", $date);
             $stmt->execute();
             return $stmt->rowCount() > 0 ? 1 : 0;
