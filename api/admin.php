@@ -488,6 +488,17 @@ class Admin
         return $stmt->rowCount() > 0 ? 1 : 0;
     }
 
+    function updateEquipment($json){
+        include "connection.php";
+        $json = json_decode($json, true);
+        $sql = "UPDATE tblequipment SET equip_name = :equipmentName WHERE equip_id = :equipmentId";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':equipmentName', $json["equipmentName"]);
+        $stmt->bindParam(':equipmentId', $json["equipmentId"]);
+        $stmt->execute();
+        return $stmt->rowCount() > 0 ? 1 : 0;
+    }
+
     function getEquipment(){
         include "connection.php";
         $sql = "SELECT * FROM tblequipment ORDER BY equip_name";
@@ -609,5 +620,8 @@ switch ($operation) {
         break;
     case "getEquipment":
         echo $admin->getEquipment();
+        break;
+    case "updateEquipment":
+        echo $admin->updateEquipment($json);
         break;
 }
