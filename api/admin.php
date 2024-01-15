@@ -476,7 +476,8 @@ class Admin
         return $stmt->rowCount() > 0 ? 1 : 0;
     }
 
-    function addEquipment($json){
+    function addEquipment($json)
+    {
         // {"equipmentName" : "Chair"}
         include "connection.php";
         $json = json_decode($json, true);
@@ -485,6 +486,20 @@ class Admin
         $stmt->bindParam(':equipmentName', $json["equipmentName"]);
         $stmt->execute();
         return $stmt->rowCount() > 0 ? 1 : 0;
+    }
+
+    function getEquipment(){
+        include "connection.php";
+        $sql = "SELECT * FROM tblequipment ORDER BY equip_name";
+        $stmt = $conn->prepare($sql);
+        $returnValue = 0;
+        if ($stmt->execute()) {
+            if ($stmt->rowCount() > 0) {
+                $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $returnValue = json_encode($rs);
+            }
+        }
+        return $returnValue;
     }
 } // admin class
 
@@ -591,5 +606,8 @@ switch ($operation) {
         break;
     case "addEquipment":
         echo $admin->addEquipment($json);
+        break;
+    case "getEquipment":
+        echo $admin->getEquipment();
         break;
 }
