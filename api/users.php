@@ -364,7 +364,7 @@ function getCurrentDate()
 function getAdminTokens()
 {
     include 'connection.php';
-    $sql = "SELECT tkn_token FROM tbltokens WHERE tkn_userLevel = 1";
+    $sql = "SELECT tkn_token FROM tbltokens WHERE tkn_userLevel = 100";
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     $returnValue;

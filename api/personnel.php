@@ -96,6 +96,15 @@ class Personnel
             $stmt4->bindParam(":equipId", $value);
             $stmt4->bindParam(":compId", $master["compId"]);
             $stmt4->execute();
+            if ($stmt4->rowCount() > 0) {
+              $tokens = getAdminTokens();
+              if ($tokens !== 0) {
+                foreach ($tokens as $token) {
+                  $notification = new Notification();
+                  $notification->sendNotif($token, $master["remarks"], "Job Completed!");
+                }
+              }
+            }
           }
         }
       }

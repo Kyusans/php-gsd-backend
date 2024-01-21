@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "94f5df8e2e687b0d992d9f4f373a9241",
+    "content-hash": "6c6671c0dc31f6e468699c894ad58015",
     "packages": [
         {
             "name": "brick/math",
@@ -63,16 +63,16 @@
         },
         {
             "name": "guzzlehttp/guzzle",
-            "version": "7.8.0",
+            "version": "7.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "1110f66a6530a40fe7aea0378fe608ee2b2248f9"
+                "reference": "41042bc7ab002487b876a0683fc8dce04ddce104"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/1110f66a6530a40fe7aea0378fe608ee2b2248f9",
-                "reference": "1110f66a6530a40fe7aea0378fe608ee2b2248f9",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/41042bc7ab002487b876a0683fc8dce04ddce104",
+                "reference": "41042bc7ab002487b876a0683fc8dce04ddce104",
                 "shasum": ""
             },
             "require": {
@@ -87,11 +87,11 @@
                 "psr/http-client-implementation": "1.0"
             },
             "require-dev": {
-                "bamarni/composer-bin-plugin": "^1.8.1",
+                "bamarni/composer-bin-plugin": "^1.8.2",
                 "ext-curl": "*",
                 "php-http/client-integration-tests": "dev-master#2c025848417c1135031fdf9c728ee53d0a7ceaee as 3.0.999",
                 "php-http/message-factory": "^1.1",
-                "phpunit/phpunit": "^8.5.29 || ^9.5.23",
+                "phpunit/phpunit": "^8.5.36 || ^9.6.15",
                 "psr/log": "^1.1 || ^2.0 || ^3.0"
             },
             "suggest": {
@@ -169,7 +169,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/guzzle/issues",
-                "source": "https://github.com/guzzle/guzzle/tree/7.8.0"
+                "source": "https://github.com/guzzle/guzzle/tree/7.8.1"
             },
             "funding": [
                 {
@@ -185,28 +185,28 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-08-27T10:20:53+00:00"
+            "time": "2023-12-03T20:35:24+00:00"
         },
         {
             "name": "guzzlehttp/promises",
-            "version": "2.0.1",
+            "version": "2.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/promises.git",
-                "reference": "111166291a0f8130081195ac4556a5587d7f1b5d"
+                "reference": "bbff78d96034045e58e13dedd6ad91b5d1253223"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/promises/zipball/111166291a0f8130081195ac4556a5587d7f1b5d",
-                "reference": "111166291a0f8130081195ac4556a5587d7f1b5d",
+                "url": "https://api.github.com/repos/guzzle/promises/zipball/bbff78d96034045e58e13dedd6ad91b5d1253223",
+                "reference": "bbff78d96034045e58e13dedd6ad91b5d1253223",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.2.5 || ^8.0"
             },
             "require-dev": {
-                "bamarni/composer-bin-plugin": "^1.8.1",
-                "phpunit/phpunit": "^8.5.29 || ^9.5.23"
+                "bamarni/composer-bin-plugin": "^1.8.2",
+                "phpunit/phpunit": "^8.5.36 || ^9.6.15"
             },
             "type": "library",
             "extra": {
@@ -252,7 +252,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/promises/issues",
-                "source": "https://github.com/guzzle/promises/tree/2.0.1"
+                "source": "https://github.com/guzzle/promises/tree/2.0.2"
             },
             "funding": [
                 {
@@ -268,20 +268,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-08-03T15:11:55+00:00"
+            "time": "2023-12-03T20:19:20+00:00"
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "2.6.1",
+            "version": "2.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "be45764272e8873c72dbe3d2edcfdfcc3bc9f727"
+                "reference": "45b30f99ac27b5ca93cb4831afe16285f57b8221"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/be45764272e8873c72dbe3d2edcfdfcc3bc9f727",
-                "reference": "be45764272e8873c72dbe3d2edcfdfcc3bc9f727",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/45b30f99ac27b5ca93cb4831afe16285f57b8221",
+                "reference": "45b30f99ac27b5ca93cb4831afe16285f57b8221",
                 "shasum": ""
             },
             "require": {
@@ -295,9 +295,9 @@
                 "psr/http-message-implementation": "1.0"
             },
             "require-dev": {
-                "bamarni/composer-bin-plugin": "^1.8.1",
+                "bamarni/composer-bin-plugin": "^1.8.2",
                 "http-interop/http-factory-tests": "^0.9",
-                "phpunit/phpunit": "^8.5.29 || ^9.5.23"
+                "phpunit/phpunit": "^8.5.36 || ^9.6.15"
             },
             "suggest": {
                 "laminas/laminas-httphandlerrunner": "Emit PSR-7 responses"
@@ -368,7 +368,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/psr7/issues",
-                "source": "https://github.com/guzzle/psr7/tree/2.6.1"
+                "source": "https://github.com/guzzle/psr7/tree/2.6.2"
             },
             "funding": [
                 {
@@ -384,7 +384,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-08-27T10:13:57+00:00"
+            "time": "2023-12-03T20:05:35+00:00"
         },
         {
             "name": "minishlink/web-push",
@@ -901,7 +901,7 @@
         },
         {
             "name": "symfony/deprecation-contracts",
-            "version": "v3.3.0",
+            "version": "v3.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/deprecation-contracts.git",
@@ -948,7 +948,7 @@
             "description": "A generic function and convention to trigger deprecation notices",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/deprecation-contracts/tree/v3.3.0"
+                "source": "https://github.com/symfony/deprecation-contracts/tree/v3.4.0"
             },
             "funding": [
                 {
@@ -968,23 +968,23 @@
         },
         {
             "name": "web-token/jwt-core",
-            "version": "3.2.8",
+            "version": "3.2.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/web-token/jwt-core.git",
-                "reference": "2bc6e99a60910d0f495682acd8b23d3eef9865a3"
+                "reference": "2b7277a4837230cf2982a1484643a978d505eae3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/web-token/jwt-core/zipball/2bc6e99a60910d0f495682acd8b23d3eef9865a3",
-                "reference": "2bc6e99a60910d0f495682acd8b23d3eef9865a3",
+                "url": "https://api.github.com/repos/web-token/jwt-core/zipball/2b7277a4837230cf2982a1484643a978d505eae3",
+                "reference": "2b7277a4837230cf2982a1484643a978d505eae3",
                 "shasum": ""
             },
             "require": {
-                "brick/math": "^0.9|^0.10|^0.11",
+                "brick/math": "^0.9|^0.10|^0.11|^0.12",
                 "ext-json": "*",
                 "ext-mbstring": "*",
-                "paragonie/constant_time_encoding": "^2.4",
+                "paragonie/constant_time_encoding": "^2.6",
                 "php": ">=8.1",
                 "spomky-labs/pki-framework": "^1.0"
             },
@@ -1032,7 +1032,7 @@
                 "symfony"
             ],
             "support": {
-                "source": "https://github.com/web-token/jwt-core/tree/3.2.8"
+                "source": "https://github.com/web-token/jwt-core/tree/3.2.9"
             },
             "funding": [
                 {
@@ -1040,20 +1040,20 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2023-08-23T09:49:09+00:00"
+            "time": "2024-01-04T15:42:08+00:00"
         },
         {
             "name": "web-token/jwt-key-mgmt",
-            "version": "3.2.8",
+            "version": "3.2.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/web-token/jwt-key-mgmt.git",
-                "reference": "3b51eeeff38ac58ee86ec83d073b88b8294b1c7e"
+                "reference": "2a034fdbf5142e39152b62cde066d2e707cfacb9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/web-token/jwt-key-mgmt/zipball/3b51eeeff38ac58ee86ec83d073b88b8294b1c7e",
-                "reference": "3b51eeeff38ac58ee86ec83d073b88b8294b1c7e",
+                "url": "https://api.github.com/repos/web-token/jwt-key-mgmt/zipball/2a034fdbf5142e39152b62cde066d2e707cfacb9",
+                "reference": "2a034fdbf5142e39152b62cde066d2e707cfacb9",
                 "shasum": ""
             },
             "require": {
@@ -1110,7 +1110,7 @@
                 "symfony"
             ],
             "support": {
-                "source": "https://github.com/web-token/jwt-key-mgmt/tree/3.2.8"
+                "source": "https://github.com/web-token/jwt-key-mgmt/tree/3.2.9"
             },
             "funding": [
                 {
@@ -1118,20 +1118,20 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2023-05-18T16:20:51+00:00"
+            "time": "2024-01-04T15:42:08+00:00"
         },
         {
             "name": "web-token/jwt-signature",
-            "version": "3.2.8",
+            "version": "3.2.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/web-token/jwt-signature.git",
-                "reference": "156e0b0ef534e53eecf23a32a92ee6d8cb4fdac4"
+                "reference": "14fec03d581550396edd0bf20fe6308dac167165"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/web-token/jwt-signature/zipball/156e0b0ef534e53eecf23a32a92ee6d8cb4fdac4",
-                "reference": "156e0b0ef534e53eecf23a32a92ee6d8cb4fdac4",
+                "url": "https://api.github.com/repos/web-token/jwt-signature/zipball/14fec03d581550396edd0bf20fe6308dac167165",
+                "reference": "14fec03d581550396edd0bf20fe6308dac167165",
                 "shasum": ""
             },
             "require": {
@@ -1187,7 +1187,7 @@
                 "symfony"
             ],
             "support": {
-                "source": "https://github.com/web-token/jwt-signature/tree/3.2.8"
+                "source": "https://github.com/web-token/jwt-signature/tree/3.2.9"
             },
             "funding": [
                 {
@@ -1195,20 +1195,20 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2023-05-18T16:20:51+00:00"
+            "time": "2024-01-04T15:42:08+00:00"
         },
         {
             "name": "web-token/jwt-signature-algorithm-ecdsa",
-            "version": "3.2.8",
+            "version": "3.2.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/web-token/jwt-signature-algorithm-ecdsa.git",
-                "reference": "34b119d6b5eca53914ad3b96660e5bd7fb5538b9"
+                "reference": "3d9c9fdca24376845bfb9a1ae46d63c1f7b395b7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/web-token/jwt-signature-algorithm-ecdsa/zipball/34b119d6b5eca53914ad3b96660e5bd7fb5538b9",
-                "reference": "34b119d6b5eca53914ad3b96660e5bd7fb5538b9",
+                "url": "https://api.github.com/repos/web-token/jwt-signature-algorithm-ecdsa/zipball/3d9c9fdca24376845bfb9a1ae46d63c1f7b395b7",
+                "reference": "3d9c9fdca24376845bfb9a1ae46d63c1f7b395b7",
                 "shasum": ""
             },
             "require": {
@@ -1257,7 +1257,7 @@
                 "symfony"
             ],
             "support": {
-                "source": "https://github.com/web-token/jwt-signature-algorithm-ecdsa/tree/3.2.8"
+                "source": "https://github.com/web-token/jwt-signature-algorithm-ecdsa/tree/3.2.9"
             },
             "funding": [
                 {
@@ -1265,24 +1265,24 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2023-05-18T16:20:51+00:00"
+            "time": "2024-01-02T17:55:33+00:00"
         },
         {
             "name": "web-token/jwt-util-ecc",
-            "version": "3.2.8",
+            "version": "3.2.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/web-token/jwt-util-ecc.git",
-                "reference": "b2337052dbee724d710c1fdb0d3609835a5f8609"
+                "reference": "9edf9b76bccf2e1db58fcc49db1d916d929335c0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/web-token/jwt-util-ecc/zipball/b2337052dbee724d710c1fdb0d3609835a5f8609",
-                "reference": "b2337052dbee724d710c1fdb0d3609835a5f8609",
+                "url": "https://api.github.com/repos/web-token/jwt-util-ecc/zipball/9edf9b76bccf2e1db58fcc49db1d916d929335c0",
+                "reference": "9edf9b76bccf2e1db58fcc49db1d916d929335c0",
                 "shasum": ""
             },
             "require": {
-                "brick/math": "^0.9|^0.10|^0.11",
+                "brick/math": "^0.9|^0.10|^0.11|^0.12",
                 "php": ">=8.1"
             },
             "suggest": {
@@ -1330,7 +1330,7 @@
                 "symfony"
             ],
             "support": {
-                "source": "https://github.com/web-token/jwt-util-ecc/tree/3.2.8"
+                "source": "https://github.com/web-token/jwt-util-ecc/tree/3.2.9"
             },
             "funding": [
                 {
@@ -1338,7 +1338,7 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2023-02-02T13:35:41+00:00"
+            "time": "2024-01-02T17:55:33+00:00"
         }
     ],
     "packages-dev": [],
