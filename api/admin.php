@@ -330,11 +330,11 @@ class Admin
         return $returnValue;
     }
 
-    function getTicketsByDate($json)
+    function getReport()
     {
         // {"startDate":"2023-11-19 00:00:00", "endDate":"2023-11-21 11:29:06"}
         include "connection.php";
-        $json = json_decode($json, true);
+        // $json = json_decode($json, true);
 
         $sql = "SELECT a.comp_subject AS Subject, b.location_name AS Location, GROUP_CONCAT(CONCAT(' ', e.user_full_name)) as Personnel, 
         f.fac_name as Submitted_By, g.joStatus_name AS Status, a.comp_date AS Date 
@@ -345,14 +345,13 @@ class Admin
         INNER JOIN tblusers as e ON e.user_id = d.joPersonnel_userId 
         INNER JOIN tblclients as f ON f.fac_id = a.comp_clientId 
         INNER JOIN tbljoborderstatus as g on g.joStatus_id = a.comp_status 
-        WHERE comp_date BETWEEN :startDate AND :endDate 
         GROUP BY a.comp_id 
         ORDER BY comp_date DESC";
 
-
+        // WHERE comp_date BETWEEN :startDate AND :endDate 
         $stmt = $conn->prepare($sql);
-        $stmt->bindParam(":startDate", $json["startDate"]);
-        $stmt->bindParam(":endDate", $json["endDate"]);
+        // $stmt->bindParam(":startDate", $json["startDate"]);
+        // $stmt->bindParam(":endDate", $json["endDate"]);
         $stmt->execute();
 
         $returnValue = 0;
@@ -591,8 +590,8 @@ switch ($operation) {
     case "getAssignedPersonnel":
         echo $admin->getAssignedPersonnel($json);
         break;
-    case "getTicketsByDate":
-        echo $admin->getTicketsByDate($json);
+    case "getReport":
+        echo $admin->getReport();
         break;
     case "reopenJob":
         echo $admin->reopenJob($json);
