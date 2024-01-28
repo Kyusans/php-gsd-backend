@@ -364,6 +364,19 @@ class Admin
         return $returnValue;
     }
 
+    function getOperation(){
+        include "connection.php";
+        $sql = "SELECT * FROM tbloperation";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $returnValue = 0;
+        if ($stmt->rowCount() > 0) {
+            $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $returnValue = json_encode($rs);
+        }
+        return $returnValue;
+    }
+
     function reopenJob($json)
     {
         include "connection.php";
@@ -622,5 +635,8 @@ switch ($operation) {
         break;
     case "updateEquipment":
         echo $admin->updateEquipment($json);
+        break;
+    case "getOperation":
+        echo $admin->getOperation();
         break;
 }
