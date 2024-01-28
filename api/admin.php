@@ -336,7 +336,9 @@ class Admin
         include "connection.php";
         // $json = json_decode($json, true);
 
-        $sql = "SELECT a.comp_subject AS Subject, b.location_name AS Location, GROUP_CONCAT(CONCAT(' ', e.user_full_name)) as Personnel, 
+        $sql = "SELECT a.comp_subject AS Subject, a.comp_operation, b.location_name AS Location, 
+		GROUP_CONCAT(CONCAT(' ', e.user_full_name)) AS Personnel, h.operation_name AS Operation, 
+        GROUP_CONCAT(DISTINCT CONCAT(' ', j.equip_name)) AS Equipment, 
         f.fac_name as Submitted_By, g.joStatus_name AS Status, a.comp_date AS Date 
         FROM tblcomplaints as a 
         INNER JOIN tbllocation as b ON b.location_id = a.comp_locationId 
@@ -344,7 +346,10 @@ class Admin
         INNER JOIN tbljoborderpersonnel as d ON d.joPersonnel_joId = c.job_id 
         INNER JOIN tblusers as e ON e.user_id = d.joPersonnel_userId 
         INNER JOIN tblclients as f ON f.fac_id = a.comp_clientId 
-        INNER JOIN tbljoborderstatus as g on g.joStatus_id = a.comp_status 
+        INNER JOIN tbljoborderstatus as g ON g.joStatus_id = a.comp_status 
+        INNER JOIN tbloperation as h ON h.operation_id = a.comp_operation 
+        INNER JOIN tbljobequipment as i ON i.joEquipment_compId = a.comp_id  
+        INNER JOIN tblequipment as j ON j.equip_id = i.joEquipment_equipId 
         GROUP BY a.comp_id 
         ORDER BY comp_date DESC";
 
