@@ -181,10 +181,11 @@ class User
     {
         include "connection.php";
         $json = json_decode($json, true);
-        $sql = "INSERT INTO tbltokens(tkn_userId, tkn_token) VALUES(:userId, :token)";
+        $sql = "INSERT INTO tbltokens(tkn_userId, tkn_token, tkn_userLevel) VALUES(:userId, :token, :userLevel)";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':userId', $json['userId']);
         $stmt->bindParam(':token', $json['token']);
+        $stmt->bindParam(':userLevel', $json['userLevel']);
         $stmt->execute();
         return $stmt->rowCount() > 0 ? 1 : 0;
     }

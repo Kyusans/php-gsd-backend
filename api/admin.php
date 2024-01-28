@@ -330,13 +330,15 @@ class Admin
         return $returnValue;
     }
 
-    function getTicketsByDate($json)
+    function getReport()
     {
         // {"startDate":"2023-11-19 00:00:00", "endDate":"2023-11-21 11:29:06"}
         include "connection.php";
-        $json = json_decode($json, true);
+        // $json = json_decode($json, true);
 
-        $sql = "SELECT a.comp_subject AS Subject, b.location_name AS Location, GROUP_CONCAT(CONCAT(' ', e.user_full_name)) as Personnel, 
+        $sql = "SELECT a.comp_subject AS Subject, a.comp_operation, b.location_name AS Location, 
+		GROUP_CONCAT(CONCAT(' ', e.user_full_name)) AS Personnel, h.operation_name AS Operation, 
+        GROUP_CONCAT(DISTINCT CONCAT(' ', j.equip_name)) AS Equipment, 
         f.fac_name as Submitted_By, g.joStatus_name AS Status, a.comp_date AS Date 
         FROM tblcomplaints as a 
         INNER JOIN tbllocation as b ON b.location_id = a.comp_locationId 
@@ -344,15 +346,17 @@ class Admin
         INNER JOIN tbljoborderpersonnel as d ON d.joPersonnel_joId = c.job_id 
         INNER JOIN tblusers as e ON e.user_id = d.joPersonnel_userId 
         INNER JOIN tblclients as f ON f.fac_id = a.comp_clientId 
-        INNER JOIN tbljoborderstatus as g on g.joStatus_id = a.comp_status 
-        WHERE comp_date BETWEEN :startDate AND :endDate 
+        INNER JOIN tbljoborderstatus as g ON g.joStatus_id = a.comp_status 
+        INNER JOIN tbloperation as h ON h.operation_id = a.comp_operation 
+        INNER JOIN tbljobequipment as i ON i.joEquipment_compId = a.comp_id  
+        INNER JOIN tblequipment as j ON j.equip_id = i.joEquipment_equipId 
         GROUP BY a.comp_id 
         ORDER BY comp_date DESC";
 
-
+        // WHERE comp_date BETWEEN :startDate AND :endDate 
         $stmt = $conn->prepare($sql);
-        $stmt->bindParam(":startDate", $json["startDate"]);
-        $stmt->bindParam(":endDate", $json["endDate"]);
+        // $stmt->bindParam(":startDate", $json["startDate"]);
+        // $stmt->bindParam(":endDate", $json["endDate"]);
         $stmt->execute();
 
         $returnValue = 0;
@@ -362,6 +366,19 @@ class Admin
             $returnValue = json_encode($rs);
         }
 
+        return $returnValue;
+    }
+
+    function getOperation(){
+        include "connection.php";
+        $sql = "SELECT * FROM tbloperation";
+        $stmt = $conn->prepare($sql);
+        $stmt->execute();
+        $returnValue = 0;
+        if ($stmt->rowCount() > 0) {
+            $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $returnValue = json_encode($rs);
+        }
         return $returnValue;
     }
 
@@ -591,8 +608,8 @@ switch ($operation) {
     case "getAssignedPersonnel":
         echo $admin->getAssignedPersonnel($json);
         break;
-    case "getTicketsByDate":
-        echo $admin->getTicketsByDate($json);
+    case "getReport":
+        echo $admin->getReport();
         break;
     case "reopenJob":
         echo $admin->reopenJob($json);
@@ -623,5 +640,8 @@ switch ($operation) {
         break;
     case "updateEquipment":
         echo $admin->updateEquipment($json);
+        break;
+    case "getOperation":
+        echo $admin->getOperation();
         break;
 }

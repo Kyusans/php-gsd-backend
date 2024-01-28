@@ -112,7 +112,7 @@ class Personnel
       return 1;
     } catch (Exception $e) {
       $conn->rollBack();
-      return 0;
+      return $e;
     }
   }
 
