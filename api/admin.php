@@ -492,7 +492,7 @@ class Admin
         // {"equipmentName" : "Chair"}
         include "connection.php";
         $json = json_decode($json, true);
-        if(recordExists($json["equipmentName"], "tblequipment", "equip_name")) {
+        if (recordExists($json["equipmentName"], "tblequipment", "equip_name")) {
             return -1;
         }
         $sql = "INSERT INTO tblequipment(equip_name) VALUES(:equipmentName)";
@@ -533,7 +533,7 @@ class Admin
     {
         include "connection.php";
         $json = json_decode($json, true);
-        if(recordExists($json["departmentName"], "tbldepartment", "dept_name")) {
+        if (recordExists($json["departmentName"], "tbldepartment", "dept_name")) {
             return -1;
         }
         $sql = "INSERT INTO tbldepartment(dept_name) VALUES(:departmentName)";
@@ -543,7 +543,8 @@ class Admin
         return $stmt->rowCount() > 0 ? 1 : 0;
     }
 
-    function getDepartment(){
+    function getDepartment()
+    {
         include "connection.php";
         $sql = "SELECT * FROM tbldepartment ORDER BY dept_name";
         $stmt = $conn->prepare($sql);
@@ -555,6 +556,18 @@ class Admin
             }
         }
         return $returnValue;
+    }
+
+    function updateDepartment($json)
+    {
+        include "connection.php";
+        $json = json_decode($json, true);
+        $sql = "UPDATE tbldepartment SET dept_name = :departmentName WHERE dept_id = :departmentId";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':departmentName', $json["departmentName"]);
+        $stmt->bindParam(':departmentId', $json["departmentId"]);
+        $stmt->execute();
+        return $stmt->rowCount() > 0 ? 1 : 0;
     }
 } // admin class
 
@@ -687,5 +700,8 @@ switch ($operation) {
         break;
     case "getDepartment":
         echo $admin->getDepartment();
+        break;
+    case "updateDepartment":
+        echo $admin->updateDepartment($json);
         break;
 }
