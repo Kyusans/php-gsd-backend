@@ -542,6 +542,20 @@ class Admin
         $stmt->execute();
         return $stmt->rowCount() > 0 ? 1 : 0;
     }
+
+    function getDepartment(){
+        include "connection.php";
+        $sql = "SELECT * FROM tbldepartment ORDER BY dept_name";
+        $stmt = $conn->prepare($sql);
+        $returnValue = 0;
+        if ($stmt->execute()) {
+            if ($stmt->rowCount() > 0) {
+                $rs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $returnValue = json_encode($rs);
+            }
+        }
+        return $returnValue;
+    }
 } // admin class
 
 function getTokenForUserId($userId)
@@ -670,5 +684,8 @@ switch ($operation) {
         break;
     case "addDepartment":
         echo $admin->addDepartment($json);
+        break;
+    case "getDepartment":
+        echo $admin->getDepartment();
         break;
 }
