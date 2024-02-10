@@ -332,12 +332,9 @@ class Admin
 
     function getReport()
     {
-        // {"startDate":"2023-11-19 00:00:00", "endDate":"2023-11-21 11:29:06"}
         include "connection.php";
-        // $json = json_decode($json, true);
-
-        $sql = "SELECT a.comp_subject AS Subject, a.comp_operation, b.location_name AS Location, 
-		GROUP_CONCAT(CONCAT(' ', e.user_full_name)) AS Personnel, h.operation_name AS Operation, 
+        $sql = "SELECT a.comp_subject AS Subject, b.location_name AS Location, 
+		GROUP_CONCAT(DISTINCT CONCAT(' ', e.user_full_name)) AS Personnel, h.operation_name AS Operation, 
         GROUP_CONCAT(DISTINCT CONCAT(' ', j.equip_name)) AS Equipment, 
         f.fac_name as Submitted_By, g.joStatus_name AS Status, a.comp_date AS Date 
         FROM tblcomplaints as a 
@@ -352,11 +349,7 @@ class Admin
         INNER JOIN tblequipment as j ON j.equip_id = i.joEquipment_equipId 
         GROUP BY a.comp_id 
         ORDER BY comp_date DESC";
-
-        // WHERE comp_date BETWEEN :startDate AND :endDate 
         $stmt = $conn->prepare($sql);
-        // $stmt->bindParam(":startDate", $json["startDate"]);
-        // $stmt->bindParam(":endDate", $json["endDate"]);
         $stmt->execute();
 
         $returnValue = 0;
